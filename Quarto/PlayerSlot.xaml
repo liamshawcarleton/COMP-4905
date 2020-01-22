@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="Quarto.PlayerSlot"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Quarto"
+             mc:Ignorable="d" 
+             d:DesignHeight="240" d:DesignWidth="100">
+    <Grid>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Image Name="imgPlayersTurn" Width="32" Height="32" HorizontalAlignment="Center"/>
+            <Label Name="lblPlayerName" HorizontalAlignment="Center" HorizontalContentAlignment="Center"/>
+            <Border BorderThickness="1" BorderBrush="Black" Grid.Column="0" Grid.Row="0" Margin="5">
+                <Image Name="imgSelectedPiece" HorizontalAlignment="Center" Width="64" Height="64"/>
+            </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>
