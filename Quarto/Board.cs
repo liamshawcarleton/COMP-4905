@@ -47,7 +47,7 @@ namespace Quarto
                 int[] totalSum = new int[] { 0, 0, 0, 0 };
                 for (int i = 0; i < 4; i++)
                 {
-                    int[] properties = board[i, y].getBinary();
+                    int[] properties = board[i, y].GetBinary();
                     for (int j = 0; j < 4; j++)
                     {
                         totalSum[j] += properties[j];
@@ -71,7 +71,7 @@ namespace Quarto
                 int[] totalSum = new int[] { 0, 0, 0, 0 };
                 for (int i = 0; i < 4; i++)
                 {
-                    int[] properties = board[x, i].getBinary();
+                    int[] properties = board[x, i].GetBinary();
                     for (int j = 0; j < 4; j++)
                     {
                         totalSum[j] += properties[j];
@@ -97,7 +97,7 @@ namespace Quarto
             {
                 for (int i = 0; i < 4; i++)
                 {
-                    int[] properties = board[x, y].getBinary();
+                    int[] properties = board[x, y].GetBinary();
                     for (int j = 0; j < 4; j++)
                     {
                         totalSum[j] += properties[j];
@@ -114,6 +114,21 @@ namespace Quarto
                 }
             }
             return false;
+        }
+        public List<int[]> GetOpenSpots()
+        {
+            List<int[]> coordinates = new List<int[]>();
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    if (board[i,j] == null)
+                    {
+                        coordinates.Add(new int[] { i, j });
+                    }
+                }
+            }
+            return coordinates;
         }
         private bool RowFull(int y)
         {

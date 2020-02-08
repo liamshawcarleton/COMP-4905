@@ -26,7 +26,7 @@ namespace Quarto
             this.image = image;
         }
 
-        public int[] getBinary()
+        public int[] GetBinary()
         {
             int[] ret = new int[4];
             ret[0] = solid ? 0 : 1;
@@ -34,6 +34,28 @@ namespace Quarto
             ret[2] = black ? 0 : 1;
             ret[3] = large ? 0 : 1;
             return ret;
+        }
+
+        public int[] BinaryXOR(Piece p)
+        {
+            int[] result = new int[4];
+            for (int i = 0; i < 4; i++)
+            {
+                if (p.GetBinary()[i] == this.GetBinary()[i]) { result[i] = 1; }
+                else { result[i] = 0; }
+            }
+            return result;
+        }
+
+        public int[] BinaryXOR(int[] binary)
+        {
+            int[] result = new int[4];
+            for (int i = 0; i < 4; i++)
+            {
+                if (binary[i] == this.GetBinary()[i]) { result[i] = 1; }
+                else { result[i] = 0; }
+            }
+            return result;
         }
 
         public BitmapImage GetImageSource()

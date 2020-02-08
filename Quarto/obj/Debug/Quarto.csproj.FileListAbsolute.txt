@@ -19,3 +19,7 @@ C:\Users\Stilts\source\repos\Quarto\Quarto\obj\Debug\Quarto.pdb
 C:\Users\Stilts\source\repos\Quarto\Quarto\obj\Debug\PlayerSlot.g.cs
 C:\Users\Stilts\source\repos\Quarto\Quarto\obj\Debug\PlayerSlot.baml
 C:\Users\Stilts\source\repos\Quarto\Quarto\obj\Debug\Quarto.csprojAssemblyReference.cache
+C:\Users\Stilts\source\repos\Quarto\Quarto\obj\Debug\BinaryXOR_View.g.cs
+C:\Users\Stilts\source\repos\Quarto\Quarto\obj\Debug\BinaryXOR_View.baml
+C:\Users\Stilts\source\repos\Quarto\Quarto\obj\Debug\SpotsRemaining_View.g.cs
+C:\Users\Stilts\source\repos\Quarto\Quarto\obj\Debug\SpotsRemaining_View.baml

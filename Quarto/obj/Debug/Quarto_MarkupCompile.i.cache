@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\Stilts\source\repos\Quarto\Quarto\App.xaml
-4-385964909
+6116321684
 
-151228195334
+191014168622
 141183416626
-GameBoard.xaml;MainWindow.xaml;PieceSlots.xaml;PlayerSlot.xaml;
+BinaryXOR_View.xaml;GameBoard.xaml;MainWindow.xaml;PieceSlots.xaml;PlayerSlot.xaml;SpotsRemaining_View.xaml;
 
 True
 

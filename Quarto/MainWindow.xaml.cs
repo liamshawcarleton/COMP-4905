@@ -84,5 +84,17 @@ namespace Quarto
                 if (mainBoard.board.CheckWin()) { MessageBox.Show("player 2 wins"); }
             }
         }
+
+        private void btnBinaryXOR_Click(object sender, RoutedEventArgs e)
+        {
+            BinaryXOR_View v = new BinaryXOR_View(mainBoard.board);
+            v.ShowDialog();
+        }
+
+        private void btnSpotsRemaining_Click(object sender, RoutedEventArgs e)
+        {
+            SpotsRemaining_View v = new SpotsRemaining_View(mainBoard.board);
+            v.ShowDialog();
+        }
     }
 }

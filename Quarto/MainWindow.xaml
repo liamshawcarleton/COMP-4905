@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Quarto"
         mc:Ignorable="d"
-        Title="MainWindow" Height="460" Width="600" Background="Gray">
+        Title="MainWindow" Height="500" Width="600" Background="Gray">
     <Grid Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
@@ -15,10 +15,15 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="296"/>
             <RowDefinition Height="128*"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <local:PlayerSlot x:Name="player1Slot" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         <local:PlayerSlot x:Name="player2Slot" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="2"/>
         <local:GameBoard x:Name="mainBoard" Grid.Column="1"/>
         <local:PieceSlots x:Name="pieceSlots" Grid.Row="1" Grid.Column="1"/>
+        <WrapPanel Name="TestingPanel" Grid.Row="2" Grid.ColumnSpan="3">
+            <Button Name="btnBinaryXOR" Content="BinaryXOR" Click="btnBinaryXOR_Click"/>
+            <Button Name="btnSpotsRemaining" Content="Spots Remaining" Click="btnSpotsRemaining_Click"/>
+        </WrapPanel>
     </Grid>
 </Window>

@@ -56,6 +56,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="SpotsRemaining_View.xaml.cs">
+      <DependentUpon>SpotsRemaining_View.xaml</DependentUpon>
+    </Compile>
+    <Page Include="BinaryXOR_View.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GameBoard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -69,7 +76,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AvailablePieces.cs" />
+    <Compile Include="BinaryXOR_View.xaml.cs">
+      <DependentUpon>BinaryXOR_View.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Board.cs" />
+    <Compile Include="DNA.cs" />
+    <Compile Include="EvaluationFunctions.cs" />
     <Compile Include="GameBoard.xaml.cs">
       <DependentUpon>GameBoard.xaml</DependentUpon>
     </Compile>
@@ -84,6 +96,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PlayerSlot.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SpotsRemaining_View.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
