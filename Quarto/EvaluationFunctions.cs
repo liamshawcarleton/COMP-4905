@@ -42,7 +42,7 @@ namespace Quarto
                     for (int i = 0; i < 4; i++)
                     {
                         if (b.GetPiece(x, i) == null) { continue; }
-                        else { pieceList.Add(b.GetPiece(i, y)); }
+                        else { pieceList.Add(b.GetPiece(x, i)); }
                     }
                     if (pieceList.Count > 1) { summary = pieceList[0].GetBinary(); }
                     else { return summary; }
@@ -149,6 +149,16 @@ namespace Quarto
 
             if (rowSum + columnSum + diagonalSum > 0) { return 1; }
             return 0;
+        }
+
+        public static int NumberPiecesRemaining(Piece[] remainingPieces)
+        {
+            int count = 0;
+            for (int i = 0; i < remainingPieces.Length; i++)
+            {
+                if (remainingPieces[i] != null) { count++; }
+            }
+            return count;
         }
 
         public static int CommonPiecesRemaining(EvaluationDirection d, Board b, Piece[] remainingPieces, int x = 0, int y = 0)

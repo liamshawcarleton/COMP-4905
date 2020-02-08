@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,17 +23,75 @@ namespace Quarto
     {
         Player player1 = new Player("player 1");
         Player player2 = new Player("player 2");
+        DNA AI1 = new DNA();
+        DNA AI2 = new DNA();
         bool pieceSelected = false;
 
         public MainWindow()
         {
             InitializeComponent();
+            AI2.Generate();
             player1.active = true;
             player2.active = false;
             player1Slot.SetPlayer(player1);
             player2Slot.SetPlayer(player2);
             pieceSlots.ItemSelected += PieceSelected;
             mainBoard.ItemPlaced += ItemPlaced;
+            Thread t = new Thread(() => { MainLoop(); });
+            t.Start();
+        }
+
+        void MainLoop()
+        {
+            this.Dispatcher.Invoke(() => { player1Slot.SetPlayerTurn(true); });
+            this.Dispatcher.Invoke(() => { player2Slot.SetPlayerTurn(false); });
+            Piece firstPick = AI1.PickPiece();
+            Thread.Sleep(1000);
+            this.Dispatcher.Invoke(() => { pieceSlots.RemoveItem(firstPick); });
+            player2.selectedPiece = firstPick;
+            this.Dispatcher.Invoke(() => { player2Slot.SetPiece(firstPick); });
+            Thread.Sleep(1000);
+            this.Dispatcher.Invoke(() => { ChangeTurns(); });
+            while (true)
+            {
+                if (player1.active)
+                {
+                    Thread.Sleep(1000);
+                    int[] placeLocation = AI1.PlayPiece(mainBoard.board, player1.selectedPiece);
+                    this.Dispatcher.Invoke(() => { mainBoard.SetPiece(player1.selectedPiece, placeLocation[0], placeLocation[1]); });
+                    if (mainBoard.board.CheckWin()) { break; }
+                    this.Dispatcher.Invoke(() => { player1Slot.RemovePiece(); });
+                    Thread.Sleep(1000);
+                    if (AvailablePieces.GetRemainingCount() == 0) { break; }
+                    Piece pick = AI1.PickPiece();
+                    this.Dispatcher.Invoke(() => { pieceSlots.RemoveItem(pick); });
+                    player2.selectedPiece = pick;
+                    this.Dispatcher.Invoke(() => { player2Slot.SetPiece(pick); });
+                    this.Dispatcher.Invoke(() => { ChangeTurns(); });
+                }
+                else
+                {
+                    Thread.Sleep(1000);
+                    int[] placeLocation = AI2.PlayPiece(mainBoard.board, player2.selectedPiece);
+                    this.Dispatcher.Invoke(() => { mainBoard.SetPiece(player2.selectedPiece, placeLocation[0], placeLocation[1]); });
+                    if (mainBoard.board.CheckWin()) { break; }
+                    this.Dispatcher.Invoke(() => { player2Slot.RemovePiece(); });
+                    Thread.Sleep(1000);
+                    if (AvailablePieces.GetRemainingCount() == 0) { break; }
+                    Piece pick = AI2.PickPiece();
+                    this.Dispatcher.Invoke(() => { pieceSlots.RemoveItem(pick); });
+                    player1.selectedPiece = pick;
+                    this.Dispatcher.Invoke(() => { player1Slot.SetPiece(pick); });
+                    this.Dispatcher.Invoke(() => { ChangeTurns(); });
+                }
+            }
+            if (mainBoard.board.CheckWin())
+            {
+                if (player1.active) { MessageBox.Show(player1.name + " Wins!"); }
+                else { MessageBox.Show(player2.name + " Wins!"); }
+            }
+            else { MessageBox.Show("Draw!"); }
+            this.Dispatcher.Invoke(() => { this.Close(); });
         }
 
         void ChangeTurns()
@@ -95,6 +154,20 @@ namespace Quarto
         {
             SpotsRemaining_View v = new SpotsRemaining_View(mainBoard.board);
             v.ShowDialog();
+        }
+
+        private void btnEvaluate_Click(object sender, RoutedEventArgs e)
+        {
+            if (player1.active)
+            {
+                int[] location = AI2.PlayPiece(mainBoard.board, player1.selectedPiece);
+                MessageBox.Show("[" + location[0] + "," + location[1] + "]");
+            }
+            else
+            {
+                int[] location = AI2.PlayPiece(mainBoard.board, player2.selectedPiece);
+                MessageBox.Show("[" + location[0] + "," + location[1] + "]");
+            }
         }
     }
 }

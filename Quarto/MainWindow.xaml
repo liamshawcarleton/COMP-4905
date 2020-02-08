@@ -24,6 +24,7 @@
         <WrapPanel Name="TestingPanel" Grid.Row="2" Grid.ColumnSpan="3">
             <Button Name="btnBinaryXOR" Content="BinaryXOR" Click="btnBinaryXOR_Click"/>
             <Button Name="btnSpotsRemaining" Content="Spots Remaining" Click="btnSpotsRemaining_Click"/>
+            <Button Name="btnEvaluate" Content="Evaluate Board" Click="btnEvaluate_Click"/>
         </WrapPanel>
     </Grid>
 </Window>

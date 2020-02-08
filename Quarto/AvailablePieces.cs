@@ -49,5 +49,32 @@ namespace Quarto
         {
             Setup();
         }
+        public static Piece RemovePiece(Piece p)
+        {
+            int? index = null;
+            for (int i = 0; i < RemainingPieces.Length; i++)
+            {
+                if (RemainingPieces[i] != null)
+                {
+                    if (RemainingPieces[i].Equals(p))
+                    {
+                        index = i;
+                        RemainingPieces[i] = null;
+                        return p;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public static int GetRemainingCount()
+        {
+            int count = 0;
+            for (int i = 0; i < RemainingPieces.Length; i++)
+            {
+                if (RemainingPieces[i] != null) { count++; }
+            }
+            return count;
+        }
     }
 }

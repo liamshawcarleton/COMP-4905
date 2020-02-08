@@ -130,6 +130,18 @@ namespace Quarto
             }
             return coordinates;
         }
+        public Board Copy()
+        {
+            Board b = new Board();
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    b.SetPiece(board[i, j], i, j);
+                }
+            }
+            return b;
+        }
         private bool RowFull(int y)
         {
             for (int i = 0; i < 4; i++)
