@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Quarto
 {
-    public static class AvailablePieces
+    public class AvailablePieces
     {
-        public static Piece[] RemainingPieces = new Piece[16];
-        private static void Setup()
+        public Piece[] RemainingPieces = new Piece[16];
+        private void Setup()
         {
             //large round hollow bw
             RemainingPieces[0] = new Piece(true, true, false, true, new Bitmap(Properties.Resources.large_round_hollow_bw));
@@ -45,11 +45,11 @@ namespace Quarto
             //small square solid w
             RemainingPieces[15] = new Piece(false, false, true, false, new Bitmap(Properties.Resources.small_square_solid_w));
         }
-        static AvailablePieces()
+        public AvailablePieces()
         {
             Setup();
         }
-        public static Piece RemovePiece(Piece p)
+        public Piece RemovePiece(Piece p)
         {
             int? index = null;
             for (int i = 0; i < RemainingPieces.Length; i++)
@@ -67,7 +67,7 @@ namespace Quarto
             return null;
         }
 
-        public static int GetRemainingCount()
+        public int GetRemainingCount()
         {
             int count = 0;
             for (int i = 0; i < RemainingPieces.Length; i++)
@@ -75,6 +75,15 @@ namespace Quarto
                 if (RemainingPieces[i] != null) { count++; }
             }
             return count;
+        }
+        public AvailablePieces Copy()
+        {
+            AvailablePieces av = new AvailablePieces();
+            for (int i = 0; i < RemainingPieces.Length; i++)
+            {
+                av.RemainingPieces[i] = RemainingPieces[i];
+            }
+            return av;
         }
     }
 }

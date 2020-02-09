@@ -19,6 +19,7 @@ namespace Quarto
     public partial class PieceSlots : UserControl
     {
         public EventHandler<ItemSelectedEventArgs> ItemSelected;
+        public AvailablePieces availablePieces = new AvailablePieces();
         public PieceSlots()
         {
             InitializeComponent();
@@ -27,22 +28,22 @@ namespace Quarto
 
         private void FillSlots()
         {
-            slot_0.Source = AvailablePieces.RemainingPieces[0].GetImageSource();
-            slot_1.Source = AvailablePieces.RemainingPieces[1].GetImageSource();
-            slot_2.Source = AvailablePieces.RemainingPieces[2].GetImageSource();
-            slot_3.Source = AvailablePieces.RemainingPieces[3].GetImageSource();
-            slot_4.Source = AvailablePieces.RemainingPieces[4].GetImageSource();
-            slot_5.Source = AvailablePieces.RemainingPieces[5].GetImageSource();
-            slot_6.Source = AvailablePieces.RemainingPieces[6].GetImageSource();
-            slot_7.Source = AvailablePieces.RemainingPieces[7].GetImageSource();
-            slot_8.Source = AvailablePieces.RemainingPieces[8].GetImageSource();
-            slot_9.Source = AvailablePieces.RemainingPieces[9].GetImageSource();
-            slot_10.Source = AvailablePieces.RemainingPieces[10].GetImageSource();
-            slot_11.Source = AvailablePieces.RemainingPieces[11].GetImageSource();
-            slot_12.Source = AvailablePieces.RemainingPieces[12].GetImageSource();
-            slot_13.Source = AvailablePieces.RemainingPieces[13].GetImageSource();
-            slot_14.Source = AvailablePieces.RemainingPieces[14].GetImageSource();
-            slot_15.Source = AvailablePieces.RemainingPieces[15].GetImageSource();
+            slot_0.Source = availablePieces.RemainingPieces[0].GetImageSource();
+            slot_1.Source = availablePieces.RemainingPieces[1].GetImageSource();
+            slot_2.Source = availablePieces.RemainingPieces[2].GetImageSource();
+            slot_3.Source = availablePieces.RemainingPieces[3].GetImageSource();
+            slot_4.Source = availablePieces.RemainingPieces[4].GetImageSource();
+            slot_5.Source = availablePieces.RemainingPieces[5].GetImageSource();
+            slot_6.Source = availablePieces.RemainingPieces[6].GetImageSource();
+            slot_7.Source = availablePieces.RemainingPieces[7].GetImageSource();
+            slot_8.Source = availablePieces.RemainingPieces[8].GetImageSource();
+            slot_9.Source = availablePieces.RemainingPieces[9].GetImageSource();
+            slot_10.Source = availablePieces.RemainingPieces[10].GetImageSource();
+            slot_11.Source = availablePieces.RemainingPieces[11].GetImageSource();
+            slot_12.Source = availablePieces.RemainingPieces[12].GetImageSource();
+            slot_13.Source = availablePieces.RemainingPieces[13].GetImageSource();
+            slot_14.Source = availablePieces.RemainingPieces[14].GetImageSource();
+            slot_15.Source = availablePieces.RemainingPieces[15].GetImageSource();
         }
 
         private void UpdateSlot(int index)
@@ -103,14 +104,14 @@ namespace Quarto
         public void RemoveItem(Piece piece)
         {
             int? index = null;
-            for (int i=0; i < AvailablePieces.RemainingPieces.Length; i++)
+            for (int i=0; i < availablePieces.RemainingPieces.Length; i++)
             {
-                if (AvailablePieces.RemainingPieces[i] != null)
+                if (availablePieces.RemainingPieces[i] != null)
                 {
-                    if (AvailablePieces.RemainingPieces[i].Equals(piece))
+                    if (availablePieces.RemainingPieces[i].Equals(piece))
                     {
                         index = i;
-                        AvailablePieces.RemainingPieces[i] = null;
+                        availablePieces.RemainingPieces[i] = null;
                         UpdateSlot(i);
                     }
                 }
@@ -123,9 +124,9 @@ namespace Quarto
             ItemSelectedEventArgs args = new ItemSelectedEventArgs();
             string[] itemName = item.Name.Split('_');
             int index = Convert.ToInt32(itemName[itemName.Length - 1].ToString());
-            if(AvailablePieces.RemainingPieces[index] != null)
+            if(availablePieces.RemainingPieces[index] != null)
             {
-                args.SelectedPiece = AvailablePieces.RemainingPieces[index];
+                args.SelectedPiece = availablePieces.RemainingPieces[index];
                 ItemSelected(this, args);
             }
         }
