@@ -8,6 +8,7 @@ namespace Quarto
 {
     class DNA
     {
+        //temporary comment for push
         double[] Coefficients = new double[11];
         public int SearchDepth { get; set; } = 1;
 

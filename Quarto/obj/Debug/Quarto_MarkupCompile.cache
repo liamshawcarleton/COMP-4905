@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\Stilts\source\repos\Quarto\Quarto\obj\Debug\
+C:\Users\Stilts\Desktop\COMP-4905\Quarto\obj\Debug\
 Quarto
 none
 false
 DEBUG;TRACE
-C:\Users\Stilts\source\repos\Quarto\Quarto\App.xaml
+C:\Users\Stilts\Desktop\COMP-4905\Quarto\App.xaml
 6116321684
 
-18-759669509
+191014168622
 141183416626
 BinaryXOR_View.xaml;GameBoard.xaml;MainWindow.xaml;PieceSlots.xaml;PlayerSlot.xaml;SpotsRemaining_View.xaml;
 
-False
+True
 
