@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29409.12
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.757
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quarto", "Quarto\Quarto.csproj", "{F6612860-B77E-475C-8039-805E31D2EA48}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneticTrainer", "GeneticTrainer\GeneticTrainer.csproj", "{C0343198-5578-441D-82D6-1B54793919B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{F6612860-B77E-475C-8039-805E31D2EA48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6612860-B77E-475C-8039-805E31D2EA48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6612860-B77E-475C-8039-805E31D2EA48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0343198-5578-441D-82D6-1B54793919B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0343198-5578-441D-82D6-1B54793919B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0343198-5578-441D-82D6-1B54793919B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0343198-5578-441D-82D6-1B54793919B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

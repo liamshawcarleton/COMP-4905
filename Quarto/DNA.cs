@@ -6,11 +6,18 @@ using System.Threading.Tasks;
 
 namespace Quarto
 {
-    class DNA
+    public class DNA
     {
-        //temporary comment for push
-        double[] Coefficients = new double[11];
-        public int SearchDepth { get; set; } = 1;
+        public static Random rnd = new Random();
+        public static double MutationProbability = 0.05;
+        public static int CrossoverMinimum = 2;
+        public static int CrossoverMaximum = 11;
+
+        public double[] Coefficients = new double[11];
+        public int GamesPlayed { get; set; } = 0;
+        public int Wins { get; set; } = 0;
+        public int Losses { get; set; } = 0;
+        public double AverageTurnsPerWin { get; set; } = 0;
 
         public DNA()
         {
@@ -19,7 +26,6 @@ namespace Quarto
 
         public void Generate()
         {
-            Random rnd = new Random();
             for (int i = 0; i < Coefficients.Length; i++)
             {
                 Coefficients[i] = rnd.NextDouble();
@@ -50,10 +56,16 @@ namespace Quarto
             }
             playableSubset = staticEval.OrderByDescending(x => x.Value).ToDictionary(x => x.Key).Keys.ToList().Take(Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(a.GetRemainingCount() * 1 / 3)))).ToList();
             Dictionary<int[], double> evaluationDict = new Dictionary<int[], double>();
+            int piecesLeft = 0;
+            foreach(Piece temp in a.RemainingPieces)
+            {
+                if (temp != null) { piecesLeft++; }
+            }
+            int searchDepth = Convert.ToInt32(Math.Floor(Convert.ToDecimal(a.RemainingPieces.Length / piecesLeft)));
             foreach (int[] coordinates in playableSubset)
             {
                 double value = 0;
-                Dictionary<int[], double> abc = RecursivePlayEvaluation(b, p, a, SearchDepth);
+                Dictionary<int[], double> abc = RecursivePlayEvaluation(b, p, a, searchDepth);
                 foreach(KeyValuePair<int[], double> i in abc)
                 {
                     value += i.Value;
@@ -147,12 +159,18 @@ namespace Quarto
         {
             List<int[]> playableLocations = b.GetOpenSpots();
             Dictionary<Piece, double> evaluationDict = new Dictionary<Piece, double>();
+            int piecesLeft = 0;
+            foreach (Piece temp in av.RemainingPieces)
+            {
+                if (temp != null) { piecesLeft++; }
+            }
+            int searchDepth = Convert.ToInt32(Math.Floor(Convert.ToDecimal(av.RemainingPieces.Length / piecesLeft)));
             foreach (Piece p in av.RemainingPieces)
             {
                 if (p != null)
                 {
                     double value = 0;
-                    Dictionary<Piece, double> abc = RecursivePickEvaluation(b, av, SearchDepth);
+                    Dictionary<Piece, double> abc = RecursivePickEvaluation(b, av, searchDepth);
                     foreach(KeyValuePair<Piece, double> i in abc)
                     {
                         value += i.Value;
@@ -197,6 +215,62 @@ namespace Quarto
                 }
                 return evaluationDict.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
             }
+        }
+
+        public static DNA Crossover(DNA dna1, DNA dna2)
+        {
+            Random rnd = new Random();
+            int crossoverPoint = rnd.Next(CrossoverMinimum, CrossoverMaximum);
+            DNA child = new DNA();
+            for (int i = 0; i <= crossoverPoint; i++)
+            {
+                child.Coefficients[i] = dna1.Coefficients[i];
+            }
+            for (int i = crossoverPoint+1; i < dna1.Coefficients.Length; i++)
+            {
+                child.Coefficients[i] = dna2.Coefficients[i];
+            }
+            return child;
+        }
+
+        public static void Mutate (ref DNA dna)
+        {
+            Random rnd = new Random();
+            int start = rnd.Next(dna.Coefficients.Length);
+            int end = rnd.Next(start, dna.Coefficients.Length);
+            List<double> original = new List<double>();
+            for (int i = start; i <= end; i++)
+            {
+                original.Add(dna.Coefficients[i]);
+            }
+            original = Shuffle(original);
+            for (int i = start; i <= end; i++)
+            {
+                dna.Coefficients[i] = original[i];
+            }
+        }
+
+        public static double Fitness(DNA dna)
+        {
+            double winPercentage = dna.GamesPlayed / dna.Wins;
+            double turnModifier = (16 - dna.AverageTurnsPerWin) / 16;
+            return winPercentage * turnModifier;
+        }
+
+        //source: https://stackoverflow.com/questions/273313/randomize-a-listt
+        private static List<double> Shuffle(List<double> list)
+        {
+            Random rnd = new Random();
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rnd.Next(n + 1);
+                double value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
+            return list;
         }
     }
 }
