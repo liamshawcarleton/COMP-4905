@@ -9,3 +9,13 @@ C:\Users\5foot\Desktop\COMP-4905\GeneticTrainer\bin\Debug\Quarto.exe.config
 C:\Users\5foot\Desktop\COMP-4905\GeneticTrainer\obj\Debug\GeneticTrainer.csproj.CopyComplete
 C:\Users\5foot\Desktop\COMP-4905\GeneticTrainer\obj\Debug\GeneticTrainer.exe
 C:\Users\5foot\Desktop\COMP-4905\GeneticTrainer\obj\Debug\GeneticTrainer.pdb
+C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\obj\Debug\GeneticTrainer.csprojAssemblyReference.cache
+C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\obj\Debug\GeneticTrainer.exe
+C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\obj\Debug\GeneticTrainer.pdb
+C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\bin\Debug\GeneticTrainer.exe.config
+C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\bin\Debug\GeneticTrainer.exe
+C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\bin\Debug\GeneticTrainer.pdb
+C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\bin\Debug\Quarto.exe
+C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\bin\Debug\Quarto.pdb
+C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\bin\Debug\Quarto.exe.config
+C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\obj\Debug\GeneticTrainer.csproj.CopyComplete

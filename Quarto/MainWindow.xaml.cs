@@ -21,10 +21,10 @@ namespace Quarto
     /// </summary>
     public partial class MainWindow : Window
     {
-        Player player1 = new Player("player 1");
-        Player player2 = new Player("player 2");
         DNA AI1 = new DNA();
         DNA AI2 = new DNA();
+        Player player1;
+        Player player2;
         bool pieceSelected = false;
 
         public MainWindow()
@@ -32,6 +32,8 @@ namespace Quarto
             InitializeComponent();
             AI1.Generate();
             AI2.Generate();
+            player1 = new Player("Player1", ref AI1);
+            player2 = new Player("Player2", ref AI2);
             player1.active = true;
             player2.active = false;
             player1Slot.SetPlayer(player1);

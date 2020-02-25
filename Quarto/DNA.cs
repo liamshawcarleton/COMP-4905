@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace Quarto
 {
@@ -14,10 +14,11 @@ namespace Quarto
         public static int CrossoverMaximum = 11;
 
         public double[] Coefficients = new double[11];
+        public double Fitness { get; set; } = 0;
         public int GamesPlayed { get; set; } = 0;
         public int Wins { get; set; } = 0;
         public int Losses { get; set; } = 0;
-        public double AverageTurnsPerWin { get; set; } = 0;
+        public int TotalMoves { get; set; } = 0;
 
         public DNA()
         {
@@ -217,9 +218,18 @@ namespace Quarto
             }
         }
 
+        public string PrintInfo()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (double d in Coefficients)
+            {
+                sb.Append(" " + Math.Round(d, 4));
+            }
+            return sb.ToString();
+        }
+
         public static DNA Crossover(DNA dna1, DNA dna2)
         {
-            Random rnd = new Random();
             int crossoverPoint = rnd.Next(CrossoverMinimum, CrossoverMaximum);
             DNA child = new DNA();
             for (int i = 0; i <= crossoverPoint; i++)
@@ -233,34 +243,50 @@ namespace Quarto
             return child;
         }
 
-        public static void Mutate (ref DNA dna)
+        public bool Mutate ()
         {
-            Random rnd = new Random();
-            int start = rnd.Next(dna.Coefficients.Length);
-            int end = rnd.Next(start, dna.Coefficients.Length);
-            List<double> original = new List<double>();
-            for (int i = start; i <= end; i++)
+            bool ret = false;
+            double probPerCoefficient = MutationProbability / Coefficients.Length;
+            for (int i = 0; i < Coefficients.Length; i++)
             {
-                original.Add(dna.Coefficients[i]);
+                double prob = rnd.NextDouble();
+                if (prob < probPerCoefficient)
+                {
+                    Coefficients[i] = rnd.NextDouble();
+                    ret = true;
+                }
             }
-            original = Shuffle(original);
-            for (int i = start; i <= end; i++)
-            {
-                dna.Coefficients[i] = original[i];
-            }
+            return ret;
         }
 
-        public static double Fitness(DNA dna)
+        public void EvaluateFitness()
         {
-            double winPercentage = dna.GamesPlayed / dna.Wins;
-            double turnModifier = (16 - dna.AverageTurnsPerWin) / 16;
-            return winPercentage * turnModifier;
+            if (Wins == 0) { Fitness = 0; return; }
+            double averageTurns = TotalMoves / Wins;
+            double winPercentage = GamesPlayed / Wins;
+            double turnModifier = (16 - averageTurns) / 16;
+            Fitness =  winPercentage * turnModifier;
+        }
+
+        public void Save(int generation, string filePath)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(generation);
+            foreach(double d in Coefficients)
+            {
+                sb.Append("," + d);
+            }
+
+            using (StreamWriter sw = File.AppendText(filePath))
+            {
+                sw.WriteLine(sb.ToString());
+                sw.Flush();
+            }
         }
 
         //source: https://stackoverflow.com/questions/273313/randomize-a-listt
         private static List<double> Shuffle(List<double> list)
         {
-            Random rnd = new Random();
             int n = list.Count;
             while (n > 1)
             {
