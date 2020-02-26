@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,25 +16,50 @@ namespace GeneticTrainer
         public static int PopulationSize { get; set; } = 0;
         public static int QuickIterationCount { get; set; } = 0;
         public static int SlowIterationCount { get; set; } = 0;
-        public static string FilePath = @"C:\Users\Stilts\Desktop\Results\genetic_evolution.csv";
+        public static string EvolutionFilePath = @"C:\Users\Stilts\Desktop\Results\genetic_evolution.csv";
+        public static string ProgressFilePath = @"C:\Users\Stilts\Desktop\Results\current_progress.csv";
+        public static int CurrentGeneration { get; set; } = 0;
         static int time = 0;
         static Random rnd = new Random();
         static void Main(string[] args)
         {
-            Console.WriteLine("Load From File?");
-            string load = Console.ReadLine();
-            if (load.ToLower() == "y")
+            Console.WriteLine("Use Default Evolution File?");
+            if (Console.ReadLine().ToLower() == "n")
             {
-                Console.WriteLine("Enter File Path");
-                FilePath = Console.ReadLine();
+                Console.WriteLine("Enter Path: ");
+                EvolutionFilePath = Console.ReadLine();
             }
-            Console.WriteLine("Population Size: ");
-            PopulationSize = Convert.ToInt32(Console.ReadLine());
-            Console.WriteLine("Quick Play Iteration Count: ");
-            QuickIterationCount = Convert.ToInt32(Console.ReadLine());
-            Console.WriteLine("Slow Play Iteration Count: ");
-            SlowIterationCount = Convert.ToInt32(Console.ReadLine());
-            GeneratePopulation();
+            Console.WriteLine("Use Default Progress File?");
+            if (Console.ReadLine().ToLower() == "n")
+            {
+                Console.WriteLine("Enter Path: ");
+                ProgressFilePath = Console.ReadLine();
+            }
+            
+            Console.WriteLine("Load Evolution Progress?");
+            if (Console.ReadLine().ToLower() == "y")
+            {
+                ReadEvolutionInfo();
+            }
+            else
+            {
+                Console.WriteLine("Population Size: ");
+                PopulationSize = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Quick Play Iteration Count: ");
+                QuickIterationCount = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Slow Play Iteration Count: ");
+                SlowIterationCount = Convert.ToInt32(Console.ReadLine());
+                CreateEvolutionFile();
+            }
+            Console.WriteLine("Load Iteration Progress?");
+            if (Console.ReadLine().ToLower() == "y")
+            {
+                ReadProgressInfo();
+            }
+            else
+            {
+                GeneratePopulation();
+            }
             MainLoop();
             Console.WriteLine("Finished");
             Console.ReadLine();
@@ -52,8 +78,12 @@ namespace GeneticTrainer
         static void MainLoop()
         {
             t.Interval = 1000;
+            Console.WriteLine("Beginning Training");
+            Console.WriteLine("Current Generation: " + CurrentGeneration);
+            Console.WriteLine("Quick Iteration Count: " + QuickIterationCount);
+            Console.WriteLine("Slow Iteration Count: " + SlowIterationCount);
             Console.WriteLine("Starting Fast Iteration");
-            for (int i = 0; i < QuickIterationCount; i++)
+            while(CurrentGeneration < QuickIterationCount)
             {
                 time = 0;
                 t.Start();
@@ -63,12 +93,12 @@ namespace GeneticTrainer
                 {
                     Console.WriteLine(dna.PrintInfo());
                 }
-
                 List<DNA> localPopulation = new List<DNA>(Population);
                 Population.Clear();
                 while (localPopulation.Count > 0)
                 {
                     DNA selection = localPopulation[0];
+                    if (selection.GamesPlayed <= PopulationSize - 1) { localPopulation.Remove(selection); Population.Add(selection); continue; }
                     localPopulation.Remove(selection);
                     foreach (DNA k in localPopulation)
                     {
@@ -76,13 +106,14 @@ namespace GeneticTrainer
                         QuickPlay(ref selection, ref opponent);
                     }
                     Population.Add(selection);
+                    SaveProgress(localPopulation);
                 }
                 Console.WriteLine("Beginning Selection");
                 Selection();
                 Console.WriteLine("Beginning Mutation");
                 Mutation();
                 Console.WriteLine("Saving");
-                Save(i);
+                Save(CurrentGeneration);
                 t.Stop();
                 int hours = (int)Math.Floor(Convert.ToDecimal(time / 3600));
                 if (time < 3600) { hours = 0; }
@@ -90,6 +121,7 @@ namespace GeneticTrainer
                 if (time < 60) { minutes = 0; }
                 int seconds = (time - (hours * 3600)) - (minutes * 60);
                 Console.WriteLine("Quick Iteration Time: " + hours.ToString("D2") + ":" + minutes.ToString("D2") + ":" + seconds.ToString("D2"));
+                CurrentGeneration++;
             }
 
             Console.WriteLine("Starting Slow Iteration");
@@ -323,10 +355,89 @@ namespace GeneticTrainer
 
         static void Save(int iteration)
         {
-            if (string.IsNullOrEmpty(FilePath)) { return; }
+            if (string.IsNullOrEmpty(EvolutionFilePath)) { return; }
             foreach(DNA d in Population)
             {
-                d.Save(iteration, FilePath);
+                d.Save(iteration, EvolutionFilePath);
+            }
+            Console.WriteLine("Genetic Population Saved");
+        }
+
+        static void SaveProgress(List<DNA> localPop)
+        {
+            using (StreamWriter sw = new StreamWriter(new FileStream(ProgressFilePath, FileMode.Create)))
+            {
+                foreach (DNA d in Population)
+                {
+                    sw.WriteLine(d.PrintProgress(CurrentGeneration));
+                }
+            }
+
+            using (StreamWriter sw = new StreamWriter(new FileStream(ProgressFilePath, FileMode.Append)))
+            {
+                foreach (DNA d in localPop)
+                {
+                    sw.WriteLine(d.PrintProgress(CurrentGeneration));
+                }
+            }
+            
+            Console.WriteLine("Progress Saved");
+        }
+
+        static void ReadEvolutionInfo()
+        {
+            string[] info;
+            using (StreamReader sr = new StreamReader(File.OpenRead(EvolutionFilePath)))
+            {
+                info = sr.ReadLine().Split(',');
+            }
+            PopulationSize = Convert.ToInt32(info[1]);
+            QuickIterationCount = Convert.ToInt32(info[3]);
+            SlowIterationCount = Convert.ToInt32(info[5]);
+        }
+
+        static void ReadProgressInfo()
+        {
+            Population.Clear();
+            List<string> pop = new List<string>();
+            using (StreamReader sr = new StreamReader(File.OpenRead(ProgressFilePath)))
+            {
+                while (!sr.EndOfStream)
+                {
+                    pop.Add(sr.ReadLine());
+                }
+            }
+            CurrentGeneration = Convert.ToInt32(pop[0].Split(',')[0]);
+            foreach(string s in pop)
+            {
+                DNA d = new DNA(s);
+                Population.Add(d);
+            }
+        }
+
+        static void CreateEvolutionFile()
+        {
+            using (StreamWriter sw = new StreamWriter(new FileStream(EvolutionFilePath, FileMode.Create)))
+            {
+                sw.Write("Population Size: ,");
+                sw.Write(PopulationSize + ",");
+                sw.Write("Quick Iteration Count: ,");
+                sw.Write(QuickIterationCount + ",");
+                sw.Write("Slow Iteration Count: ,");
+                sw.Write(SlowIterationCount);
+                sw.WriteLine();
+                sw.Write("Generation,");
+                sw.Write("RowSum,");
+                sw.Write("ColumnSum,");
+                sw.Write("DiagonalSum,");
+                sw.Write("RowSpotsRemaining,");
+                sw.Write("ColumnSpotsRemaining,");
+                sw.Write("DiagonalSpotsRemaining,");
+                sw.Write("RemainingCount,");
+                sw.Write("RowCommonPiecesRemaining,");
+                sw.Write("ColumnCommonPiecesRemaining,");
+                sw.Write("DiagonalCommonPiecesRemaining");
+                sw.WriteLine();
             }
         }
     }

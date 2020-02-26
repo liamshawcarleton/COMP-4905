@@ -9,7 +9,7 @@ namespace Quarto
     public class DNA
     {
         public static Random rnd = new Random();
-        public static double MutationProbability = 0.05;
+        public static double MutationProbability = 0.9;
         public static int CrossoverMinimum = 2;
         public static int CrossoverMaximum = 11;
 
@@ -24,6 +24,8 @@ namespace Quarto
         {
 
         }
+
+        public DNA(string progress) { LoadFromProgress(progress); }
 
         public void Generate()
         {
@@ -226,6 +228,34 @@ namespace Quarto
                 sb.Append(" " + Math.Round(d, 4));
             }
             return sb.ToString();
+        }
+
+        public string PrintProgress(int currentGeneration)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(currentGeneration);
+            sb.Append("," + GamesPlayed);
+            sb.Append("," + Wins);
+            sb.Append("," + Losses);
+            sb.Append("," + TotalMoves);
+            foreach (double d in Coefficients)
+            {
+                sb.Append("," + Math.Round(d, 4));
+            }
+            return sb.ToString();
+        }
+
+        public void LoadFromProgress(string progress)
+        {
+            string[] values = progress.Split(',');
+            GamesPlayed = Convert.ToInt32(values[1]);
+            Wins = Convert.ToInt32(values[2]);
+            Losses = Convert.ToInt32(values[3]);
+            TotalMoves = Convert.ToInt32(values[4]);
+            for (int i = 5; i < values.Length; i++)
+            {
+                Coefficients[i - 5] = Convert.ToDouble(values[i]);
+            }
         }
 
         public static DNA Crossover(DNA dna1, DNA dna2)
