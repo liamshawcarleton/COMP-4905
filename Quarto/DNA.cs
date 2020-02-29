@@ -9,7 +9,7 @@ namespace Quarto
     public class DNA
     {
         public static Random rnd = new Random();
-        public static double MutationProbability = 0.9;
+        public static double MutationProbability = 0.3;
         public static int CrossoverMinimum = 2;
         public static int CrossoverMaximum = 11;
 
@@ -31,7 +31,8 @@ namespace Quarto
         {
             for (int i = 0; i < Coefficients.Length; i++)
             {
-                Coefficients[i] = rnd.NextDouble();
+                int makenegative = rnd.Next(0, 2) * 2 - 1;
+                Coefficients[i] = makenegative * rnd.NextDouble();
             }
         }
 
@@ -57,14 +58,23 @@ namespace Quarto
             {
                 staticEval.Add(i, StaticPlayEvaluate(b, p, i, a));
             }
-            playableSubset = staticEval.OrderByDescending(x => x.Value).ToDictionary(x => x.Key).Keys.ToList().Take(Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(a.GetRemainingCount() * 1 / 3)))).ToList();
+            int piecesLeft = a.GetRemainingCount();
+            int searchDepth;
+            if (piecesLeft > 0)
+            {
+                searchDepth = Convert.ToInt32(Math.Floor(Convert.ToDecimal(a.RemainingPieces.Length / (piecesLeft))));
+                if (searchDepth > 4) { searchDepth = 4; }
+            }
+            else
+            {
+                searchDepth = 0;
+            }
+            playableSubset = staticEval.OrderByDescending(x => x.Value).ToDictionary(x => x.Key).Keys.ToList().Take(Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(a.GetRemainingCount() * 1 / (4-searchDepth + 1))))).ToList();
             Dictionary<int[], double> evaluationDict = new Dictionary<int[], double>();
-            int piecesLeft = 0;
-            foreach(Piece temp in a.RemainingPieces)
+            /*foreach(Piece temp in a.RemainingPieces)
             {
                 if (temp != null) { piecesLeft++; }
-            }
-            int searchDepth = Convert.ToInt32(Math.Floor(Convert.ToDecimal(a.RemainingPieces.Length / piecesLeft)));
+            }*/
             foreach (int[] coordinates in playableSubset)
             {
                 double value = 0;
@@ -77,7 +87,15 @@ namespace Quarto
             }
 
             List<int[]> sorted = evaluationDict.OrderByDescending(x => x.Value).ToDictionary(pair => pair.Key).Keys.ToList();
+            if (sorted.Count == 0) { return PlayPiece(b, p, a); }
             return sorted[0];
+        }
+
+        public int[] RandomPlayPiece(Board b, Piece p, AvailablePieces a)
+        {
+            List<int[]> playableLocations = b.GetOpenSpots();
+            int rng = rnd.Next(playableLocations.Count - 1);
+            return playableLocations[rng];
         }
 
         public double StaticPlayEvaluate(Board b, Piece p, int[] coordinates, AvailablePieces a)
@@ -119,7 +137,6 @@ namespace Quarto
                 {
                     evaluationDict.Add(coordinates, StaticPlayEvaluate(b, p, coordinates, a));
                 }
-
                 evaluationDict = evaluationDict.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                 return evaluationDict;
             }
@@ -154,7 +171,7 @@ namespace Quarto
                     evaluationDict.Add(p, StaticPickEvaluate(b, p, av));
                 }
             }
-            List<Piece> sorted = evaluationDict.OrderBy(x => x.Value).ToDictionary(pair => pair.Key).Keys.ToList();
+            List<Piece> sorted = evaluationDict.OrderByDescending(x => x.Value).ToDictionary(pair => pair.Key).Keys.ToList();
             return sorted[0];
         }
 
@@ -162,11 +179,11 @@ namespace Quarto
         {
             List<int[]> playableLocations = b.GetOpenSpots();
             Dictionary<Piece, double> evaluationDict = new Dictionary<Piece, double>();
-            int piecesLeft = 0;
-            foreach (Piece temp in av.RemainingPieces)
+            int piecesLeft = av.GetRemainingCount();
+            /*foreach (Piece temp in av.RemainingPieces)
             {
                 if (temp != null) { piecesLeft++; }
-            }
+            }*/
             int searchDepth = Convert.ToInt32(Math.Floor(Convert.ToDecimal(av.RemainingPieces.Length / piecesLeft)));
             foreach (Piece p in av.RemainingPieces)
             {
@@ -183,6 +200,20 @@ namespace Quarto
             }
             List<Piece> sorted = evaluationDict.OrderByDescending(x => x.Value).ToDictionary(pair => pair.Key).Keys.ToList();
             return sorted[0];
+        }
+
+        public Piece RandomPickPiece(Board b, AvailablePieces av)
+        {
+            Piece[] pieces = av.RemainingPieces;
+            int count = av.GetRemainingCount();
+            int rng = rnd.Next(count - 1);
+            int it = 0;
+            foreach(Piece p in pieces)
+            {
+                if (rng == it) { if (p == null) { continue; } else { return p; } }
+                if (p != null) { it++; }
+            }
+            return null;
         }
 
         public Dictionary<Piece, double> RecursivePickEvaluation(Board b, AvailablePieces av, int depth)
@@ -282,7 +313,8 @@ namespace Quarto
                 double prob = rnd.NextDouble();
                 if (prob < probPerCoefficient)
                 {
-                    Coefficients[i] = rnd.NextDouble();
+                    int makenegative = rnd.Next(0, 2) * 2 - 1;
+                    Coefficients[i] = makenegative * rnd.NextDouble();
                     ret = true;
                 }
             }

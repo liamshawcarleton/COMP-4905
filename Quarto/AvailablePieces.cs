@@ -70,10 +70,7 @@ namespace Quarto
         public int GetRemainingCount()
         {
             int count = 0;
-            for (int i = 0; i < RemainingPieces.Length; i++)
-            {
-                if (RemainingPieces[i] != null) { count++; }
-            }
+            for (int i = 0; i < RemainingPieces.Length; i++) { if (RemainingPieces[i] != null) { count++; } }
             return count;
         }
         public AvailablePieces Copy()

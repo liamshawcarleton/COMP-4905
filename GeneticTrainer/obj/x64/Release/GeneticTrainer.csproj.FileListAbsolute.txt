@@ -1,0 +1,10 @@
+C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\bin\x64\Release\GeneticTrainer.exe.config
+C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\bin\x64\Release\GeneticTrainer.exe
+C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\bin\x64\Release\GeneticTrainer.pdb
+C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\bin\x64\Release\Quarto.exe
+C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\bin\x64\Release\Quarto.pdb
+C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\bin\x64\Release\Quarto.exe.config
+C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\obj\x64\Release\GeneticTrainer.csprojAssemblyReference.cache
+C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\obj\x64\Release\GeneticTrainer.csproj.CopyComplete
+C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\obj\x64\Release\GeneticTrainer.exe
+C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\obj\x64\Release\GeneticTrainer.pdb

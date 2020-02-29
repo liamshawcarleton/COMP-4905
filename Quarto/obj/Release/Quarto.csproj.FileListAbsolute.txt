@@ -1,7 +1,6 @@
 C:\Users\Stilts\source\repos\Quarto\Quarto\bin\Release\Quarto.exe.config
 C:\Users\Stilts\source\repos\Quarto\Quarto\bin\Release\Quarto.exe
 C:\Users\Stilts\source\repos\Quarto\Quarto\bin\Release\Quarto.pdb
-C:\Users\Stilts\source\repos\Quarto\Quarto\obj\Release\Quarto.csprojAssemblyReference.cache
 C:\Users\Stilts\source\repos\Quarto\Quarto\obj\Release\BinaryXOR_View.g.cs
 C:\Users\Stilts\source\repos\Quarto\Quarto\obj\Release\GameBoard.g.cs
 C:\Users\Stilts\source\repos\Quarto\Quarto\obj\Release\MainWindow.g.cs
@@ -23,3 +22,4 @@ C:\Users\Stilts\source\repos\Quarto\Quarto\obj\Release\Quarto.Properties.Resourc
 C:\Users\Stilts\source\repos\Quarto\Quarto\obj\Release\Quarto.csproj.GenerateResource.cache
 C:\Users\Stilts\source\repos\Quarto\Quarto\obj\Release\Quarto.exe
 C:\Users\Stilts\source\repos\Quarto\Quarto\obj\Release\Quarto.pdb
+C:\Users\Stilts\source\repos\Quarto\Quarto\obj\Release\Quarto.csprojAssemblyReference.cache

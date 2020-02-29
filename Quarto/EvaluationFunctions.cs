@@ -14,6 +14,7 @@ namespace Quarto
             Column,
             Diagonal
         }
+
         public static void WinningMoveAvailable(Piece p, Board b)
         {
 
