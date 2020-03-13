@@ -124,7 +124,7 @@ namespace Quarto
                 temp.RemovePiece(p);
                 value += StaticPlayEvaluate(b, p, i, temp);
             }
-            return 1/value;
+            return value;
         }
 
         public Dictionary<int[], double> RecursivePlayEvaluation (Board b, Piece p, AvailablePieces a, int depth)
@@ -171,7 +171,7 @@ namespace Quarto
                     evaluationDict.Add(p, StaticPickEvaluate(b, p, av));
                 }
             }
-            List<Piece> sorted = evaluationDict.OrderByDescending(x => x.Value).ToDictionary(pair => pair.Key).Keys.ToList();
+            List<Piece> sorted = evaluationDict.OrderBy(x => x.Value).ToDictionary(pair => pair.Key).Keys.ToList();
             return sorted[0];
         }
 
@@ -184,7 +184,8 @@ namespace Quarto
             {
                 if (temp != null) { piecesLeft++; }
             }*/
-            int searchDepth = Convert.ToInt32(Math.Floor(Convert.ToDecimal(av.RemainingPieces.Length / piecesLeft)));
+            //int searchDepth = Convert.ToInt32(Math.Floor(Convert.ToDecimal(av.RemainingPieces.Length / piecesLeft)));
+            int searchDepth = 2;
             foreach (Piece p in av.RemainingPieces)
             {
                 if (p != null)
@@ -198,7 +199,7 @@ namespace Quarto
                     evaluationDict.Add(p, value);
                 }
             }
-            List<Piece> sorted = evaluationDict.OrderByDescending(x => x.Value).ToDictionary(pair => pair.Key).Keys.ToList();
+            List<Piece> sorted = evaluationDict.OrderBy(x => x.Value).ToDictionary(pair => pair.Key).Keys.ToList();
             return sorted[0];
         }
 
@@ -242,7 +243,7 @@ namespace Quarto
                         double value = 0;
                         foreach (KeyValuePair<int[], double> i in playDict)
                         {
-                            value += 1 / i.Value;
+                            value += i.Value;
                         }
                         evaluationDict.Add(p, value);
                     }
@@ -359,6 +360,73 @@ namespace Quarto
                 list[n] = value;
             }
             return list;
+        }
+
+        //[int[], piece, value]
+        public object[] MinMaxPlay(Board b, Piece p, AvailablePieces av, int depth, double value, bool opponent)
+        {
+            List<int[]> playableLocations = b.GetOpenSpots();
+            int evaluationCount = Convert.ToInt32(Math.Floor(Convert.ToDecimal(playableLocations.Count / 2)));
+            Dictionary<int[], double> evaluationDict = new Dictionary<int[], double>();
+            foreach (int[] coordinates in playableLocations)
+            {
+                evaluationDict.Add(coordinates, StaticPlayEvaluate(b, p, coordinates, av));
+            }
+            List<int[]> sorted = evaluationDict.OrderByDescending(x => x.Value).ToDictionary(pair => pair.Key).Keys.ToList();
+
+            List<object[]> evaluationResults = new List<object[]>();
+            for (int i = 0; i < evaluationCount; i++)
+            {
+                Board temp = b.Copy();
+                temp.SetPiece(p, sorted[i][0], sorted[i][1]);
+                if (!opponent)
+                {
+                    object[] eval = MinMaxPick(temp, av, depth, evaluationDict[sorted[i]], opponent);
+                    evaluationResults.Add(new object[] { sorted[i], eval[0], eval[1] });
+                }
+                else
+                {
+                    object[] eval = MinMaxPick(temp, av, depth, -1 * evaluationDict[sorted[i]], opponent);
+                    evaluationResults.Add(new object[] { sorted[i], eval[0], eval[1] });
+                }
+            }
+
+            object[] bestPlay = evaluationResults[0];
+            if (!opponent)
+            {
+                foreach (object[] o in evaluationResults)
+                {
+                    if ((double)o[2] > (double)bestPlay[2]) { bestPlay = o; }
+                }
+                //bestPlay = evaluationResults.OrderByDescending(x => x[1]).ToList<object[]>()[0];
+            }
+            else
+            {
+                foreach (object[] o in evaluationResults)
+                {
+                    if ((double)o[2] < (double)bestPlay[2]) { bestPlay = o; }
+                }
+                //bestPlay = evaluationResults.OrderBy(x => x[1]).ToList<object[]>()[0];
+            }
+            return bestPlay;
+        }
+
+        //[piece, value]
+        public object[] MinMaxPick(Board b, AvailablePieces av, int depth, double value, bool opponent)
+        {
+            Piece p = PickPiece(b, av);
+            AvailablePieces copy = av.Copy();
+            value -= StaticPickEvaluate(b, p, av);
+            if (depth == 0)
+            {
+                return new object[] { p, value };
+            }
+            else
+            {
+                copy.RemovePiece(p);
+                object[] evaluation = MinMaxPlay(b, p, av, depth - 1, value, !opponent);
+                return new object[] { p, evaluation[2] };
+            }
         }
     }
 }

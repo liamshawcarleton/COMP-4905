@@ -60,13 +60,18 @@ namespace Quarto
                 if (smartPlayer.active)
                 {
                     Thread.Sleep(1000);
-                    int[] placeLocation = SmartAI.RecursivePlayPiece(mainBoard.board, smartPlayer.selectedPiece, pieceSlots.availablePieces);
-                    this.Dispatcher.Invoke(() => { mainBoard.SetPiece(smartPlayer.selectedPiece, placeLocation[0], placeLocation[1]); });
+                    object[] move = SmartAI.MinMaxPlay(mainBoard.board, smartPlayer.selectedPiece, pieceSlots.availablePieces, 1, 0, false);
+                    int[] position = (int[])move[0];
+                    Piece myPick = (Piece)move[1];
+                    //int[] placeLocation = SmartAI.RecursivePlayPiece(mainBoard.board, smartPlayer.selectedPiece, pieceSlots.availablePieces);
+                    //this.Dispatcher.Invoke(() => { mainBoard.SetPiece(smartPlayer.selectedPiece, placeLocation[0], placeLocation[1]); });
+                    this.Dispatcher.Invoke(() => { mainBoard.SetPiece(smartPlayer.selectedPiece, position[0], position[1]); });
+
                     if (mainBoard.board.CheckWin()) { break; }
                     this.Dispatcher.Invoke(() => { player1Slot.RemovePiece(); });
                     Thread.Sleep(1000);
                     if (pieceSlots.availablePieces.GetRemainingCount() == 0) { break; }
-                    Piece pick = SmartAI.RecursivePickPiece(mainBoard.board, pieceSlots.availablePieces);
+                    Piece pick = myPick;
                     if (pick == null) { MessageBox.Show("Smart AI Picked Null Piece"); }
                     this.Dispatcher.Invoke(() => { pieceSlots.RemoveItem(pick); });
                     randomPlayer.selectedPiece = pick;
@@ -76,13 +81,13 @@ namespace Quarto
                 else
                 {
                     Thread.Sleep(1000);
-                    int[] placeLocation = RandomAI.RecursivePlayPiece(mainBoard.board, randomPlayer.selectedPiece, pieceSlots.availablePieces);
+                    int[] placeLocation = RandomAI.RandomPlayPiece(mainBoard.board, randomPlayer.selectedPiece, pieceSlots.availablePieces);
                     this.Dispatcher.Invoke(() => { mainBoard.SetPiece(randomPlayer.selectedPiece, placeLocation[0], placeLocation[1]); });
                     if (mainBoard.board.CheckWin()) { break; }
                     this.Dispatcher.Invoke(() => { player2Slot.RemovePiece(); });
                     Thread.Sleep(1000);
                     if (pieceSlots.availablePieces.GetRemainingCount() == 0) { break; }
-                    Piece pick = RandomAI.RecursivePickPiece(mainBoard.board, pieceSlots.availablePieces);
+                    Piece pick = RandomAI.RandomPickPiece(mainBoard.board, pieceSlots.availablePieces);
                     if (pick == null) { MessageBox.Show("Random AI Picked Null Piece"); }
                     this.Dispatcher.Invoke(() => { pieceSlots.RemoveItem(pick); });
                     smartPlayer.selectedPiece = pick;
