@@ -391,6 +391,10 @@ namespace Quarto
                 }
             }
 
+            if (evaluationResults.Count == 0)
+            {
+                return new object[] { playableLocations[0], null, 0};
+            }
             object[] bestPlay = evaluationResults[0];
             if (!opponent)
             {

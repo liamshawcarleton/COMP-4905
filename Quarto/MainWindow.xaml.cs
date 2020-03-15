@@ -21,7 +21,7 @@ namespace Quarto
     /// </summary>
     public partial class MainWindow : Window
     {
-        DNA SmartAI = new DNA("50,29,28,1,262,0.9141,-0.5774,-0.9025,-0.5492,-0.8791,0.6362,0.1169,0.1666,-0.0851,0.6454,0.7795");
+        DNA SmartAI = new DNA("99,29,25,4,192,0.2604,-0.614,-0.7494,0.8286,-0.3335,0.6443,-0.4219,-0.153,-0.0851,0.6433,0.1901");
         DNA RandomAI = new DNA("74,29,24,5,135,0.9384,-0.803,-0.7494,0.8286,-0.3335,0.8291,-0.5918,-0.0391,-0.0851,-0.1738,0.7795");
         Player smartPlayer;
         Player randomPlayer;
@@ -60,7 +60,7 @@ namespace Quarto
                 if (smartPlayer.active)
                 {
                     Thread.Sleep(1000);
-                    object[] move = SmartAI.MinMaxPlay(mainBoard.board, smartPlayer.selectedPiece, pieceSlots.availablePieces, 1, 0, false);
+                    object[] move = SmartAI.MinMaxPlay(mainBoard.board, smartPlayer.selectedPiece, pieceSlots.availablePieces, 2, 0, false);
                     int[] position = (int[])move[0];
                     Piece myPick = (Piece)move[1];
                     //int[] placeLocation = SmartAI.RecursivePlayPiece(mainBoard.board, smartPlayer.selectedPiece, pieceSlots.availablePieces);
@@ -80,6 +80,7 @@ namespace Quarto
                 }
                 else
                 {
+                    /*
                     Thread.Sleep(1000);
                     int[] placeLocation = RandomAI.RandomPlayPiece(mainBoard.board, randomPlayer.selectedPiece, pieceSlots.availablePieces);
                     this.Dispatcher.Invoke(() => { mainBoard.SetPiece(randomPlayer.selectedPiece, placeLocation[0], placeLocation[1]); });
@@ -92,7 +93,7 @@ namespace Quarto
                     this.Dispatcher.Invoke(() => { pieceSlots.RemoveItem(pick); });
                     smartPlayer.selectedPiece = pick;
                     this.Dispatcher.Invoke(() => { player1Slot.SetPiece(pick); });
-                    this.Dispatcher.Invoke(() => { ChangeTurns(); });
+                    this.Dispatcher.Invoke(() => { ChangeTurns(); });*/
                 }
             }
             if (mainBoard.board.CheckWin())

@@ -26,11 +26,11 @@ namespace GeneticTrainer
             Console.WriteLine("Play Game?");
             if (Console.ReadLine().ToLower() == "y")
             {
-                DNA smartAI = new DNA("50,29,28,1,262,0.9141,-0.5774,-0.9025,-0.5492,-0.8791,0.6362,0.1169,0.1666,-0.0851,0.6454,0.7795");
+                DNA smartAI = new DNA("99,29,25,4,192,0.2604,-0.614,-0.7494,0.8286,-0.3335,0.6443,-0.4219,-0.153,-0.0851,0.6433,0.1901");
                 smartAI.Wins = 0;
                 smartAI.Losses = 0;
                 smartAI.GamesPlayed = 0;
-                DNA randomAI = new DNA("74,29,24,5,135,0.9384,-0.803,-0.7494,0.8286,-0.3335,0.8291,-0.5918,-0.0391,-0.0851,-0.1738,0.7795");
+                DNA randomAI = new DNA("99,29,25,4,192,0.2604,-0.614,-0.7494,0.8286,-0.3335,0.6443,-0.4219,-0.153,-0.0851,0.6433,0.1901");
                 randomAI.Wins = 0;
                 randomAI.Losses = 0;
                 randomAI.GamesPlayed = 0;
@@ -215,9 +215,10 @@ namespace GeneticTrainer
             int player1First = rnd.Next(0, 2);
             if (player1First == 0)
             {
+
                 player1.active = true;
                 player2.active = false;
-                QuickGivePiece(ref player1, ref player2, ref board, ref available);
+                RandomGivePiece(ref player1, ref player2, ref board, ref available);
             }
             else
             {
@@ -229,10 +230,10 @@ namespace GeneticTrainer
             {
                 if (player1.active)
                 {
-                    PlayPiece(ref player1, ref board, ref available);
+                    Piece give = PlayPiece(ref player1, ref board, ref available);
                     if (board.CheckWin()) { GameWon(ref player1, ref player2); break; }
                     if (available.GetRemainingCount() == 0) { GameTie(ref player1, ref player2); break; }
-                    GivePiece(ref player1, ref player2, ref board, ref available);
+                    GivePiece(ref player1, ref player2, ref give);
                 }
                 else
                 {
@@ -253,7 +254,7 @@ namespace GeneticTrainer
             {
                 player1.active = true;
                 player2.active = false;
-                GivePiece(ref player1, ref player2, ref board, ref available);
+                RandomGivePiece(ref player1, ref player2, ref board, ref available);
             }
             else
             {
@@ -265,17 +266,17 @@ namespace GeneticTrainer
             {
                 if (player1.active)
                 {
-                    PlayPiece(ref player1, ref board, ref available);
+                    Piece give = PlayPiece(ref player1, ref board, ref available);
                     if (board.CheckWin()) { GameWon(ref player1, ref player2); break; }
                     if (available.GetRemainingCount() == 0) { GameTie(ref player1, ref player2); break; }
-                    GivePiece(ref player1, ref player2, ref board, ref available);
+                    GivePiece(ref player1, ref player2, ref give);
                 }
                 else
                 {
-                    RandomPlayPiece(ref player2, ref board, ref available);
+                    QuickPlayPiece(ref player2, ref board, ref available);
                     if (board.CheckWin()) { GameWon(ref player2, ref player1); break; }
                     if (available.GetRemainingCount() == 0) { GameTie(ref player1, ref player2); break; }
-                    RandomGivePiece(ref player2, ref player1, ref board, ref available);
+                    QuickGivePiece(ref player2, ref player1, ref board, ref available);
                 }
             }
         }
@@ -289,29 +290,29 @@ namespace GeneticTrainer
             {
                 player1.active = true;
                 player2.active = false;
-                QuickGivePiece(ref player1, ref player2, ref board, ref available);
+                RandomGivePiece(ref player1, ref player2, ref board, ref available);
             }
             else
             {
                 player1.active = false;
                 player2.active = true;
-                QuickGivePiece(ref player2, ref player1, ref board, ref available);
+                RandomGivePiece(ref player2, ref player1, ref board, ref available);
             }
             while (true)
             {
                 if (player1.active)
                 {
-                    PlayPiece(ref player1, ref board, ref available);
+                    Piece give = PlayPiece(ref player1, ref board, ref available);
                     if (board.CheckWin()) { GameWon(ref player1, ref player2); break; }
                     if (available.GetRemainingCount() == 0) { GameTie(ref player1, ref player2); break; }
-                    GivePiece(ref player1, ref player2, ref board, ref available);
+                    GivePiece(ref player1, ref player2, ref give);
                 }
                 else
                 {
-                    PlayPiece(ref player2, ref board, ref available);
+                    Piece give = PlayPiece(ref player2, ref board, ref available);
                     if (board.CheckWin()) { GameWon(ref player2, ref player1); break; }
                     if (available.GetRemainingCount() == 0) { GameTie(ref player1, ref player2); break; }
-                    GivePiece(ref player2, ref player1, ref board, ref available);
+                    GivePiece(ref player2, ref player1, ref give);
                 }
             }
         }
@@ -390,12 +391,19 @@ namespace GeneticTrainer
             }
         }
 
-        static void PlayPiece (ref Player player, ref Board board, ref AvailablePieces available)
+        static Piece PlayPiece (ref Player player, ref Board board, ref AvailablePieces available)
         {
-            int[] location = player.ai.RecursivePlayPiece(board, player.selectedPiece, available);
+            object[] play = player.ai.MinMaxPlay(board, player.selectedPiece, available, 2, 0, false);
+            int[] location = (int[])play[0];
+            Piece piece_play = (Piece)play[1];
             board.SetPiece(player.selectedPiece, location[0], location[1]);
             player.Turns += 1;
             player.selectedPiece = null;
+            if (piece_play != null)
+            {
+                available.RemovePiece(piece_play);
+            }
+            return piece_play;
         }
 
         static void QuickPlayPiece(ref Player player, ref Board board, ref AvailablePieces available)
@@ -414,12 +422,10 @@ namespace GeneticTrainer
             player.selectedPiece = null;
         }
 
-        static void GivePiece(ref Player picker, ref Player receiver, ref Board board, ref AvailablePieces available)
+        static void GivePiece(ref Player picker, ref Player receiver, ref Piece piece)
         {
-            Piece p = picker.ai.RecursivePickPiece(board, available);
-            receiver.selectedPiece = p;
+            receiver.selectedPiece = piece;
             picker.Turns += 1;
-            available.RemovePiece(p);
             ChangeTurns(ref picker, ref receiver);
         }
 
