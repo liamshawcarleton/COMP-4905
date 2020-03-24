@@ -20,6 +20,28 @@ namespace Quarto
 
         }
 
+        public static int Winnable(EvaluationDirection d, Board b, int x, int y)
+        {
+            switch (d)
+            {
+                case EvaluationDirection.Row:
+                    return 1;
+                case EvaluationDirection.Column:
+                    return 1;
+                case EvaluationDirection.Diagonal:
+                    if (x == y)
+                    {
+                        return 1;
+                    }
+                    else if (x+y == 3)
+                    {
+                        return 1;
+                    }
+                    return 0;
+            }
+            return 0;
+        }
+
         public static int[] CommonProperties(EvaluationDirection d, Board b, int x = 0, int y = 0)
         {
             List<Piece> pieceList = new List<Piece>();

@@ -10,10 +10,12 @@ namespace Quarto
     {
         public static Random rnd = new Random();
         public static double MutationProbability = 0.3;
+        public static double MutationGradientMin = 0.2;
+        public static double MutationGradientMax = 0.6;
         public static int CrossoverMinimum = 2;
-        public static int CrossoverMaximum = 11;
+        public static int CrossoverMaximum = 9;
 
-        public double[] Coefficients = new double[11];
+        public double[] Coefficients = new double[10];
         public double Fitness { get; set; } = 0;
         public int GamesPlayed { get; set; } = 0;
         public int Wins { get; set; } = 0;
@@ -34,6 +36,44 @@ namespace Quarto
                 int makenegative = rnd.Next(0, 2) * 2 - 1;
                 Coefficients[i] = makenegative * rnd.NextDouble();
             }
+        }
+
+        public void NewGenerate()
+        {
+            Coefficients[7] = rnd.NextDouble();
+            GenerateBinarySum();
+            GenerateSpotsRemaining();
+            GenerateCommonPieces();
+        }
+
+        private void GenerateBinarySum()
+        {
+            double min_value = 0.3;
+            double max_value = 0.9;
+            double initial_value = rnd.NextDouble() * (max_value - min_value) + min_value;
+            Coefficients[0] = initial_value;
+            Coefficients[1] = initial_value;
+            Coefficients[2] = initial_value;
+        }
+
+        private void GenerateSpotsRemaining()
+        {
+            double min_value = -0.3;
+            double max_value = 0.3;
+            double initial_value = rnd.NextDouble() * (max_value - min_value) + min_value;
+            Coefficients[3] = initial_value;
+            Coefficients[4] = initial_value;
+            Coefficients[5] = initial_value;
+        }
+
+        private void GenerateCommonPieces()
+        {
+            double min_value = -0.3;
+            double max_value = 0.3;
+            double initial_value = rnd.NextDouble() * (max_value - min_value) + min_value;
+            Coefficients[7] = initial_value;
+            Coefficients[8] = initial_value;
+            Coefficients[9] = initial_value;
         }
 
         public int[] PlayPiece(Board b, Piece p, AvailablePieces a)
@@ -110,8 +150,10 @@ namespace Quarto
             double v8 = Coefficients[7] * EvaluationFunctions.CommonPiecesRemaining(EvaluationFunctions.EvaluationDirection.Row, b, a.RemainingPieces, coordinates[0], coordinates[1]);
             double v9 = Coefficients[8] * EvaluationFunctions.CommonPiecesRemaining(EvaluationFunctions.EvaluationDirection.Column, b, a.RemainingPieces, coordinates[0], coordinates[1]);
             double v10 = Coefficients[9] * EvaluationFunctions.CommonPiecesRemaining(EvaluationFunctions.EvaluationDirection.Diagonal, b, a.RemainingPieces, coordinates[0], coordinates[1]);
+            int v11 = EvaluationFunctions.Winnable(EvaluationFunctions.EvaluationDirection.Diagonal, b, coordinates[0], coordinates[1]);
 
-            return v1 + v2 + v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10;
+            //return v1 + v2 + v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10;
+            return (v1 * v4 * v8) + (v2 * v5 * v9) + (v3 * v6 * v10 * v11);
         }
 
         public double StaticPickEvaluate(Board b, Piece p, AvailablePieces a)
@@ -305,6 +347,67 @@ namespace Quarto
             return child;
         }
 
+        public static DNA NewCrossover(DNA dna1, DNA dna2)
+        {
+            double[] new_values = new double[10];
+
+            double choose_parent = rnd.NextDouble();
+            if (choose_parent < 0.5)
+            {
+                new_values[0] = dna1.Coefficients[0];
+                new_values[1] = dna1.Coefficients[1];
+                new_values[2] = dna1.Coefficients[2];
+            }
+            else
+            {
+                new_values[0] = dna2.Coefficients[0];
+                new_values[1] = dna2.Coefficients[1];
+                new_values[2] = dna2.Coefficients[2];
+            }
+
+            choose_parent = rnd.NextDouble();
+            if (choose_parent < 0.5)
+            {
+                new_values[3] = dna1.Coefficients[3];
+                new_values[4] = dna1.Coefficients[4];
+                new_values[5] = dna1.Coefficients[5];
+            }
+            else
+            {
+                new_values[3] = dna2.Coefficients[3];
+                new_values[4] = dna2.Coefficients[4];
+                new_values[5] = dna2.Coefficients[5];
+            }
+
+            choose_parent = rnd.NextDouble();
+            if (choose_parent < 0.5)
+            {
+                new_values[7] = dna1.Coefficients[7];
+                new_values[8] = dna1.Coefficients[8];
+                new_values[9] = dna1.Coefficients[9];
+            }
+            else
+            {
+                new_values[7] = dna2.Coefficients[7];
+                new_values[8] = dna2.Coefficients[8];
+                new_values[9] = dna2.Coefficients[9];
+            }
+
+            choose_parent = rnd.NextDouble();
+            if (choose_parent < 0.5)
+            {
+                new_values[6] = dna1.Coefficients[6];
+            }
+            else
+            {
+                new_values[6] = dna2.Coefficients[6];
+            }
+
+            DNA child = new DNA();
+            for (int i = 0; i < new_values.Length; i++) { child.Coefficients[i] = new_values[i]; }
+            return child;
+        }
+
         public bool Mutate ()
         {
             bool ret = false;
@@ -320,6 +423,61 @@ namespace Quarto
                 }
             }
             return ret;
+        }
+
+        public bool NewMutate()
+        {
+            bool mut = false;
+            double prob = MutationProbability / 3;
+            double val = rnd.NextDouble();
+            if (val < prob)
+            {
+                MutateSum();
+                mut = true;
+            }
+            val = rnd.NextDouble();
+            if (val < prob)
+            {
+                MutateSpotsRemaining();
+                mut = true;
+            }
+            val = rnd.NextDouble();
+            if (val < prob)
+            {
+                MutateCommonPieces();
+                mut = true;
+            }
+            return mut;
+        }
+
+        private void MutateSum()
+        {
+            int gradient_sign = rnd.Next(0, 2) * 2 - 1;
+            double gradient_value = rnd.NextDouble() * (MutationGradientMax - MutationGradientMin) + MutationGradientMin;
+            gradient_value *= gradient_sign;
+            Coefficients[0] += gradient_value;
+            Coefficients[1] += gradient_value;
+            Coefficients[2] += gradient_value;
+        }
+
+        private void MutateSpotsRemaining()
+        {
+            int gradient_sign = rnd.Next(0, 2) * 2 - 1;
+            double gradient_value = rnd.NextDouble() * (MutationGradientMax - MutationGradientMin) + MutationGradientMin;
+            gradient_value *= gradient_sign;
+            Coefficients[3] += gradient_value;
+            Coefficients[4] += gradient_value;
+            Coefficients[5] += gradient_value;
+        }
+
+        private void MutateCommonPieces()
+        {
+            int gradient_sign = rnd.Next(0, 2) * 2 - 1;
+            double gradient_value = rnd.NextDouble() * (MutationGradientMax - MutationGradientMin) + MutationGradientMin;
+            gradient_value *= gradient_sign;
+            Coefficients[7] += gradient_value;
+            Coefficients[8] += gradient_value;
+            Coefficients[9] += gradient_value;
         }
 
         public void EvaluateFitness()

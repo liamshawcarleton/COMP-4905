@@ -16,8 +16,8 @@ namespace GeneticTrainer
         public static int PopulationSize { get; set; } = 0;
         public static int QuickIterationCount { get; set; } = 0;
         public static int SlowIterationCount { get; set; } = 0;
-        public static string EvolutionFilePath = @"C:\Users\Stilts\Desktop\Results\genetic_evolution.csv";
-        public static string ProgressFilePath = @"C:\Users\Stilts\Desktop\Results\current_progress.csv";
+        public static string EvolutionFilePath = @"C:\Users\5foot\Desktop\Results\genetic_evolution.csv";
+        public static string ProgressFilePath = @"C:\Users\5foot\Desktop\Results\current_progress.csv";
         public static int CurrentGeneration { get; set; } = 0;
         static int time = 0;
         static Random rnd = new Random();
@@ -26,11 +26,11 @@ namespace GeneticTrainer
             Console.WriteLine("Play Game?");
             if (Console.ReadLine().ToLower() == "y")
             {
-                DNA smartAI = new DNA("99,29,25,4,192,0.2604,-0.614,-0.7494,0.8286,-0.3335,0.6443,-0.4219,-0.153,-0.0851,0.6433,0.1901");
+                DNA smartAI = new DNA("31,29,28,1,177,-0.8624,0.5446,-0.9155,0.2703,0.7865,0.0228,-0.0695,-0.0016,-0.3029,-0.6997");
                 smartAI.Wins = 0;
                 smartAI.Losses = 0;
                 smartAI.GamesPlayed = 0;
-                DNA randomAI = new DNA("99,29,25,4,192,0.2604,-0.614,-0.7494,0.8286,-0.3335,0.6443,-0.4219,-0.153,-0.0851,0.6433,0.1901");
+                DNA randomAI = new DNA("10,10,10,1,177,1.090721314,1.090721314,1.090721314,0.455185238,0.455185238,0.455185238,0,0.778888538,0.778888538,0.778888538");
                 randomAI.Wins = 0;
                 randomAI.Losses = 0;
                 randomAI.GamesPlayed = 0;
@@ -81,9 +81,10 @@ namespace GeneticTrainer
             }
             else
             {
-                GeneratePopulation();
+                //GeneratePopulation();
+                NewGeneratePopulation();
             }
-            MainLoop();
+            NewMainLoop();
             Console.WriteLine("Finished");
             Console.ReadLine();
         }
@@ -94,6 +95,16 @@ namespace GeneticTrainer
             {
                 DNA dna = new DNA();
                 dna.Generate();
+                Population.Add(dna);
+            }
+        }
+
+        static void NewGeneratePopulation()
+        {
+            for (int i = 0; i < PopulationSize; i++)
+            {
+                DNA dna = new DNA();
+                dna.NewGenerate();
                 Population.Add(dna);
             }
         }
@@ -191,6 +202,96 @@ namespace GeneticTrainer
                 Selection();
                 Console.WriteLine("Beginning Mutation");
                 Mutation();
+                Console.WriteLine("Saving");
+                Save(i);
+                t.Stop();
+                int hours = time % 3600;
+                if (time < 3600) { hours = 0; }
+                int minutes = (time - hours * 3600) % 60;
+                if (time < 60) { minutes = 0; }
+                int seconds = (time - hours * 3600) - minutes * 60;
+                Console.WriteLine("Slow Iteration Time: " + hours + ":" + minutes + ":" + seconds);
+            }
+        }
+
+        static void NewMainLoop()
+        {
+            t.Interval = 1000;
+            Console.WriteLine("Beginning Training");
+            Console.WriteLine("Current Generation: " + CurrentGeneration);
+            Console.WriteLine("Quick Iteration Count: " + QuickIterationCount);
+            Console.WriteLine("Slow Iteration Count: " + SlowIterationCount);
+            Console.WriteLine("Starting Fast Iteration");
+            while (CurrentGeneration < QuickIterationCount)
+            {
+                time = 0;
+                t.Start();
+                t.Elapsed += T_Elapsed;
+                Console.WriteLine("Weights");
+                foreach (DNA dna in Population)
+                {
+                    Console.WriteLine(dna.PrintInfo());
+                }
+                List<DNA> localPopulation = new List<DNA>(Population);
+                Population.Clear();
+                while (localPopulation.Count > 0)
+                {
+                    DNA selection = localPopulation[0];
+                    if (selection.GamesPlayed >= PopulationSize - 1) { localPopulation.Remove(selection); Population.Add(selection); continue; }
+                    localPopulation.Remove(selection);
+                    foreach (DNA k in localPopulation)
+                    {
+                        DNA opponent = k;
+                        QuickPlay(ref selection, ref opponent);
+                    }
+                    Population.Add(selection);
+                    SaveProgress(localPopulation);
+                }
+                Console.WriteLine("Beginning Selection");
+                NewSelection();
+                Console.WriteLine("Beginning Mutation");
+                NewMutate();
+                Console.WriteLine("Saving");
+                Save(CurrentGeneration);
+                t.Stop();
+                int hours = (int)Math.Floor(Convert.ToDecimal(time / 3600));
+                if (time < 3600) { hours = 0; }
+                int minutes = (int)Math.Floor(Convert.ToDecimal((time - (hours * 3600)) / 60));
+                if (time < 60) { minutes = 0; }
+                int seconds = (time - (hours * 3600)) - (minutes * 60);
+                Console.WriteLine("Quick Iteration Time: " + hours.ToString("D2") + ":" + minutes.ToString("D2") + ":" + seconds.ToString("D2"));
+                CurrentGeneration++;
+            }
+
+            Console.WriteLine("Starting Slow Iteration");
+            for (int i = 0; i < SlowIterationCount; i++)
+            {
+                time = 0;
+                t.Start();
+                foreach (DNA dna in Population)
+                {
+                    Console.WriteLine(dna.PrintInfo());
+                }
+
+                List<DNA> localPopulation = new List<DNA>(Population);
+                Population.Clear();
+                while (localPopulation.Count > 0)
+                {
+                    DNA selection = localPopulation[0];
+                    localPopulation.Remove(selection);
+                    foreach (DNA k in localPopulation)
+                    {
+                        DNA opponent = k;
+                        Player p1 = new Player("Player 1", ref selection);
+                        Player p2 = new Player("Player 2", ref opponent);
+                        Play(ref p1, ref p2);
+                    }
+                    Population.Add(selection);
+                }
+                Console.WriteLine("Beginning Selection");
+                NewSelection();
+                Console.WriteLine("Beginning Mutation");
+                NewMutate();
                 Console.WriteLine("Saving");
                 Save(i);
                 t.Stop();
@@ -511,11 +612,58 @@ namespace GeneticTrainer
             }
         }
 
+        static void NewSelection()
+        {
+            foreach (DNA d in Population) { d.EvaluateFitness(); }
+            List<DNA> selectionList = Population.OrderByDescending(x => x.Fitness).Take((int)Math.Floor(Convert.ToDecimal(Population.Count * 3 / 4))).ToList();
+            Population.Clear();
+
+            double fitnessSum = 0;
+            foreach (DNA d in selectionList) { fitnessSum += d.Fitness; }
+
+            while (Population.Count < PopulationSize)
+            {
+                double fit1 = fitnessSum * rnd.NextDouble();
+                double fit2 = fitnessSum * rnd.NextDouble();
+                double sum1 = 0;
+                double sum2 = 0;
+                int index1 = 0;
+                int index2 = 0;
+                while (sum1 < fit1)
+                {
+                    sum1 += selectionList[index1].Fitness;
+                    if (sum1 < fit1) { index1++; }
+                }
+                while (sum2 < fit2)
+                {
+                    sum2 += selectionList[index2].Fitness;
+                    if (sum2 < fit2) { index2++; }
+                }
+                if (index1 == index2) { continue; }
+                else
+                {
+                    DNA child = DNA.NewCrossover(selectionList[index1], selectionList[index2]);
+                    Population.Add(child);
+                }
+            }
+        }
+
         static void Mutation()
         {
             foreach(DNA d in Population)
             {
                 if (d.Mutate())
+                {
+                    Console.WriteLine("DNA Mutated");
+                }
+            }
+        }
+
+        static void NewMutate()
+        {
+            foreach (DNA d in Population)
+            {
+                if (d.NewMutate())
                 {
                     Console.WriteLine("DNA Mutated");
                 }
