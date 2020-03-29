@@ -21,7 +21,7 @@ namespace Quarto
     /// </summary>
     public partial class MainWindow : Window
     {
-        DNA SmartAI = new DNA("31,29,28,1,177,-0.8624,0.5446,-0.9155,0.2703,0.7865,0.0228,-0.0695,-0.0016,-0.3029,-0.6997");
+        DNA SmartAI = new DNA("99,29,21,8,168,1.8464,1.8464,1.8464,1.3562,1.3562,1.3562,0,0.692,0.692,0.692");
         DNA RandomAI = new DNA("10,10,10,1,177,1.090721314,1.090721314,1.090721314,0.455185238,0.455185238,0.455185238,0,0.778888538,0.778888538,0.778888538");
         Player smartPlayer;
         Player randomPlayer;
@@ -46,6 +46,7 @@ namespace Quarto
 
         void MainLoop()
         {
+            
             this.Dispatcher.Invoke(() => { player1Slot.SetPlayerTurn(true); });
             this.Dispatcher.Invoke(() => { player2Slot.SetPlayerTurn(false); });
             Piece firstPick = SmartAI.RandomPickPiece(mainBoard.board, pieceSlots.availablePieces);
@@ -171,13 +172,11 @@ namespace Quarto
         {
             if (smartPlayer.active)
             {
-                int[] location = RandomAI.PlayPiece(mainBoard.board, smartPlayer.selectedPiece, pieceSlots.availablePieces);
-                MessageBox.Show("[" + location[0] + "," + location[1] + "]");
+                SmartAI.PickPiece(this.mainBoard.board, this.pieceSlots.availablePieces);
             }
             else
             {
-                int[] location = RandomAI.PlayPiece(mainBoard.board, randomPlayer.selectedPiece, pieceSlots.availablePieces);
-                MessageBox.Show("[" + location[0] + "," + location[1] + "]");
+                SmartAI.PickPiece(this.mainBoard.board, this.pieceSlots.availablePieces);
             }
         }
     }

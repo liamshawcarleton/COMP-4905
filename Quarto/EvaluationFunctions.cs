@@ -15,9 +15,17 @@ namespace Quarto
             Diagonal
         }
 
-        public static void WinningMoveAvailable(Piece p, Board b)
+        public static int WinningMoveAvailable(Piece p, Board b)
         {
-
+            List<int[]> spots = b.GetOpenSpots();
+            foreach (int[] i in spots)
+            {
+                Board temp = new Board();
+                temp = b.Copy();
+                temp.SetPiece(p, i[0], i[1]);
+                if (temp.CheckWin()) { return 1000; }
+            }
+            return 0;
         }
 
         public static int Winnable(EvaluationDirection d, Board b, int x, int y)

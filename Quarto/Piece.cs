@@ -29,10 +29,10 @@ namespace Quarto
         public int[] GetBinary()
         {
             int[] ret = new int[4];
-            ret[0] = solid ? 0 : 1;
-            ret[1] = round ? 0 : 1;
-            ret[2] = black ? 0 : 1;
-            ret[3] = large ? 0 : 1;
+            ret[0] = solid ? 1 : 0;
+            ret[1] = round ? 1 : 0;
+            ret[2] = black ? 1 : 0;
+            ret[3] = large ? 1 : 0;
             return ret;
         }
 

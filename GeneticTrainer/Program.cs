@@ -26,7 +26,7 @@ namespace GeneticTrainer
             Console.WriteLine("Play Game?");
             if (Console.ReadLine().ToLower() == "y")
             {
-                DNA smartAI = new DNA("31,29,28,1,177,-0.8624,0.5446,-0.9155,0.2703,0.7865,0.0228,-0.0695,-0.0016,-0.3029,-0.6997");
+                DNA smartAI = new DNA("39,29,28,1,180,1.3671,1.3671,1.3671,7.8038,7.8038,7.8038,0,0.528,0.528,0.528");
                 smartAI.Wins = 0;
                 smartAI.Losses = 0;
                 smartAI.GamesPlayed = 0;
@@ -38,7 +38,7 @@ namespace GeneticTrainer
                 Player randomPlayer = new Player("Random Player", ref randomAI);
                 Console.WriteLine("Game Count: ");
                 int gamecount = Convert.ToInt32(Console.ReadLine());
-                PlayLoop(gamecount, ref smartPlayer, ref randomPlayer, false);
+                PlayLoop(gamecount, ref smartPlayer, ref randomPlayer, true);
                 Console.Write("Games Played: ");
                 Console.Write(gamecount);
                 Console.WriteLine(smartPlayer.name + " Won: " + smartPlayer.ai.Wins + " Games");
