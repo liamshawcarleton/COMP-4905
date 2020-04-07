@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Quarto"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="600" Background="Gray">
+        Title="MainWindow" Height="500" Width="600" Background="Gray" Closing="Window_Closing">
     <Grid Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>

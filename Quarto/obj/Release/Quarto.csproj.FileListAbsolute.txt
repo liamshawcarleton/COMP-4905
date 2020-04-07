@@ -26,7 +26,6 @@ C:\Users\Stilts\source\repos\Quarto\Quarto\obj\Release\Quarto.csprojAssemblyRefe
 C:\Users\5foot\Desktop\COMP-4905\Quarto\bin\Release\Quarto.exe.config
 C:\Users\5foot\Desktop\COMP-4905\Quarto\bin\Release\Quarto.exe
 C:\Users\5foot\Desktop\COMP-4905\Quarto\bin\Release\Quarto.pdb
-C:\Users\5foot\Desktop\COMP-4905\Quarto\obj\Release\Quarto.csprojAssemblyReference.cache
 C:\Users\5foot\Desktop\COMP-4905\Quarto\obj\Release\BinaryXOR_View.g.cs
 C:\Users\5foot\Desktop\COMP-4905\Quarto\obj\Release\GameBoard.g.cs
 C:\Users\5foot\Desktop\COMP-4905\Quarto\obj\Release\MainWindow.g.cs
@@ -49,3 +48,4 @@ C:\Users\5foot\Desktop\COMP-4905\Quarto\obj\Release\Quarto.csproj.GenerateResour
 C:\Users\5foot\Desktop\COMP-4905\Quarto\obj\Release\Quarto.csproj.CoreCompileInputs.cache
 C:\Users\5foot\Desktop\COMP-4905\Quarto\obj\Release\Quarto.exe
 C:\Users\5foot\Desktop\COMP-4905\Quarto\obj\Release\Quarto.pdb
+C:\Users\5foot\Desktop\COMP-4905\Quarto\obj\Release\Quarto.csprojAssemblyReference.cache

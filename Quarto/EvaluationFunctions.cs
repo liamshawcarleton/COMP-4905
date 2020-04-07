@@ -15,16 +15,12 @@ namespace Quarto
             Diagonal
         }
 
-        public static int WinningMoveAvailable(Piece p, Board b)
+        public static int WinningMoveAvailable(Piece p, Board b, int[] coordinates)
         {
-            List<int[]> spots = b.GetOpenSpots();
-            foreach (int[] i in spots)
-            {
-                Board temp = new Board();
-                temp = b.Copy();
-                temp.SetPiece(p, i[0], i[1]);
-                if (temp.CheckWin()) { return 1000; }
-            }
+            Board temp = new Board();
+            temp = b.Copy();
+            temp.SetPiece(p, coordinates[0], coordinates[1]);
+            if (temp.CheckWin()) { return 1000; }
             return 0;
         }
 
@@ -41,7 +37,7 @@ namespace Quarto
                     {
                         return 1;
                     }
-                    else if (x+y == 3)
+                    else if (x + y == 3)
                     {
                         return 1;
                     }
@@ -98,8 +94,8 @@ namespace Quarto
                     {
                         for (int i = 0; i < 4; i++)
                         {
-                            if (b.GetPiece(3-i, i) == null) { continue; }
-                            else { pieceList.Add(b.GetPiece(3-i, i)); }
+                            if (b.GetPiece(3 - i, i) == null) { continue; }
+                            else { pieceList.Add(b.GetPiece(3 - i, i)); }
                         }
                     }
                     else
@@ -162,7 +158,7 @@ namespace Quarto
         public static int BinarySum(int[] binary)
         {
             int result = 0;
-            foreach(int i in binary)
+            foreach (int i in binary)
             {
                 result += i;
             }
@@ -197,7 +193,7 @@ namespace Quarto
             int[] binary;
             int count = 0;
             switch (d)
-            { 
+            {
                 case EvaluationDirection.Row:
                     binary = CommonProperties(EvaluationDirection.Row, b, x, y);
                     count = 0;

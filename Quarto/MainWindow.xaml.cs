@@ -21,8 +21,8 @@ namespace Quarto
     /// </summary>
     public partial class MainWindow : Window
     {
-        DNA SmartAI = new DNA("99,29,21,8,168,1.8464,1.8464,1.8464,1.3562,1.3562,1.3562,0,0.692,0.692,0.692");
-        DNA RandomAI = new DNA("10,10,10,1,177,1.090721314,1.090721314,1.090721314,0.455185238,0.455185238,0.455185238,0,0.778888538,0.778888538,0.778888538");
+        DNA SmartAI = new DNA();
+        DNA RandomAI = new DNA();
         Player smartPlayer;
         Player randomPlayer;
         bool pieceSelected = false;
@@ -30,10 +30,10 @@ namespace Quarto
         public MainWindow()
         {
             InitializeComponent();
-            //SmartAI.Generate();
-            RandomAI.Generate();
-            smartPlayer = new Player("Player1", ref SmartAI);
-            randomPlayer = new Player("Player2", ref RandomAI);
+            SmartAI.BuildPredefinedAI(2);
+            RandomAI.BuildPredefinedAI(0);
+            smartPlayer = new Player("Hard AI", ref SmartAI);
+            randomPlayer = new Player("Human", ref RandomAI);
             smartPlayer.active = true;
             randomPlayer.active = false;
             player1Slot.SetPlayer(smartPlayer);
@@ -46,7 +46,7 @@ namespace Quarto
 
         void MainLoop()
         {
-            
+            bool playing_against_player = true;
             this.Dispatcher.Invoke(() => { player1Slot.SetPlayerTurn(true); });
             this.Dispatcher.Invoke(() => { player2Slot.SetPlayerTurn(false); });
             Piece firstPick = SmartAI.RandomPickPiece(mainBoard.board, pieceSlots.availablePieces);
@@ -61,7 +61,7 @@ namespace Quarto
                 if (smartPlayer.active)
                 {
                     Thread.Sleep(1000);
-                    object[] move = SmartAI.MinMaxPlay(mainBoard.board, smartPlayer.selectedPiece, pieceSlots.availablePieces, 2, 0, false);
+                    object[] move = SmartAI.MinMaxPlay(mainBoard.board, smartPlayer.selectedPiece, pieceSlots.availablePieces, SmartAI.SearchDepth, 0, false);
                     int[] position = (int[])move[0];
                     Piece myPick = (Piece)move[1];
                     //int[] placeLocation = SmartAI.RecursivePlayPiece(mainBoard.board, smartPlayer.selectedPiece, pieceSlots.availablePieces);
@@ -81,20 +81,27 @@ namespace Quarto
                 }
                 else
                 {
-                    /*
-                    Thread.Sleep(1000);
-                    int[] placeLocation = RandomAI.RandomPlayPiece(mainBoard.board, randomPlayer.selectedPiece, pieceSlots.availablePieces);
-                    this.Dispatcher.Invoke(() => { mainBoard.SetPiece(randomPlayer.selectedPiece, placeLocation[0], placeLocation[1]); });
-                    if (mainBoard.board.CheckWin()) { break; }
-                    this.Dispatcher.Invoke(() => { player2Slot.RemovePiece(); });
-                    Thread.Sleep(1000);
-                    if (pieceSlots.availablePieces.GetRemainingCount() == 0) { break; }
-                    Piece pick = RandomAI.RandomPickPiece(mainBoard.board, pieceSlots.availablePieces);
-                    if (pick == null) { MessageBox.Show("Random AI Picked Null Piece"); }
-                    this.Dispatcher.Invoke(() => { pieceSlots.RemoveItem(pick); });
-                    smartPlayer.selectedPiece = pick;
-                    this.Dispatcher.Invoke(() => { player1Slot.SetPiece(pick); });
-                    this.Dispatcher.Invoke(() => { ChangeTurns(); });*/
+                    if (!playing_against_player)
+                    {
+                        Thread.Sleep(1000);
+                        object[] move = RandomAI.MinMaxPlay(mainBoard.board, randomPlayer.selectedPiece, pieceSlots.availablePieces, RandomAI.SearchDepth, 0, false);
+                        int[] position = (int[])move[0];
+                        Piece myPick = (Piece)move[1];
+                        //int[] placeLocation = SmartAI.RecursivePlayPiece(mainBoard.board, smartPlayer.selectedPiece, pieceSlots.availablePieces);
+                        //this.Dispatcher.Invoke(() => { mainBoard.SetPiece(smartPlayer.selectedPiece, placeLocation[0], placeLocation[1]); });
+                        this.Dispatcher.Invoke(() => { mainBoard.SetPiece(randomPlayer.selectedPiece, position[0], position[1]); });
+
+                        if (mainBoard.board.CheckWin()) { break; }
+                        this.Dispatcher.Invoke(() => { player2Slot.RemovePiece(); });
+                        Thread.Sleep(1000);
+                        if (pieceSlots.availablePieces.GetRemainingCount() == 0) { break; }
+                        Piece pick = myPick;
+                        if (pick == null) { MessageBox.Show("Random AI Picked Null Piece"); }
+                        this.Dispatcher.Invoke(() => { pieceSlots.RemoveItem(pick); });
+                        smartPlayer.selectedPiece = pick;
+                        this.Dispatcher.Invoke(() => { player1Slot.SetPiece(pick); });
+                        this.Dispatcher.Invoke(() => { ChangeTurns(); });
+                    }
                 }
             }
             if (mainBoard.board.CheckWin())
@@ -178,6 +185,11 @@ namespace Quarto
             {
                 SmartAI.PickPiece(this.mainBoard.board, this.pieceSlots.availablePieces);
             }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Environment.Exit(0);
         }
     }
 }

@@ -21,6 +21,7 @@ namespace Quarto
         public int Wins { get; set; } = 0;
         public int Losses { get; set; } = 0;
         public int TotalMoves { get; set; } = 0;
+        public int SearchDepth = 0;
 
         public DNA()
         {
@@ -44,6 +45,36 @@ namespace Quarto
             GenerateBinarySum();
             GenerateSpotsRemaining();
             GenerateCommonPieces();
+        }
+
+        public void GenerateVariableAI(int iteration)
+        {
+            double bSum = 0.0085 * iteration + 0.7218;
+            double cPieces = 0.011 * iteration + 0.1766;
+            double sRemaining = 0.2686 * Math.Log10(iteration) - 0.3199;
+
+            for (int i = 0; i < 3; i++) { Coefficients[i] = bSum; }
+            for (int i = 3; i < 6; i++) { Coefficients[i] = cPieces; }
+            for (int i = 6; i < 9; i++) { Coefficients[i] = sRemaining; }
+        }
+
+        public void BuildPredefinedAI(int difficulty)
+        {
+            switch (difficulty)
+            {
+                case 0:
+                    LoadFromProgress("39,29,15,14,147,0.5965,0.5965,0.5965,0.9266,0.9266,0.9266,0,-0.3561,-0.3561,-0.3561");
+                    this.SearchDepth = 0;
+                    break;
+                case 1:
+                    LoadFromProgress("39,29,0,21,0,0.5965,0.5965,0.5965,-0.4577,-0.4577,-0.4577,0,-0.0403,-0.0403,-0.0403");
+                    this.SearchDepth = 1;
+                    break;
+                default:
+                    LoadFromProgress("10,29,0,0,0,0.726896913,0.726896913,0.726896913,0.056102734,0.056102734,0.056102734,0,0.125947166,0.125947166,0.125947166");
+                    this.SearchDepth = 2;
+                    break;
+            }
         }
 
         private void GenerateBinarySum()
@@ -151,7 +182,7 @@ namespace Quarto
             double v9 = Coefficients[8] * EvaluationFunctions.CommonPiecesRemaining(EvaluationFunctions.EvaluationDirection.Column, b, a.RemainingPieces, coordinates[0], coordinates[1]);
             double v10 = Coefficients[9] * EvaluationFunctions.CommonPiecesRemaining(EvaluationFunctions.EvaluationDirection.Diagonal, b, a.RemainingPieces, coordinates[0], coordinates[1]);
             int v11 = EvaluationFunctions.Winnable(EvaluationFunctions.EvaluationDirection.Diagonal, b, coordinates[0], coordinates[1]);
-            int v12 = EvaluationFunctions.WinningMoveAvailable(p, b);
+            int v12 = EvaluationFunctions.WinningMoveAvailable(p, b, coordinates);
 
             //return v1 + v2 + v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10;
             return (v1 * v4 * v8) + (v2 * v5 * v9) + (v3 * v6 * v10 * v11) + v12;
@@ -459,31 +490,34 @@ namespace Quarto
         private void MutateSum()
         {
             int gradient_sign = rnd.Next(0, 2) * 2 - 1;
-            double gradient_value = rnd.NextDouble() * (MutationGradientMax - MutationGradientMin) + MutationGradientMin;
-            gradient_value *= gradient_sign;
-            Coefficients[0] += gradient_value;
-            Coefficients[1] += gradient_value;
-            Coefficients[2] += gradient_value;
+            //double gradient_value = rnd.NextDouble() * (MutationGradientMax - MutationGradientMin) + MutationGradientMin;
+            //gradient_value *= gradient_sign;
+            double value = rnd.NextDouble() * gradient_sign;
+            Coefficients[0] = value;
+            Coefficients[1] = value;
+            Coefficients[2] = value;
         }
 
         private void MutateSpotsRemaining()
         {
             int gradient_sign = rnd.Next(0, 2) * 2 - 1;
-            double gradient_value = rnd.NextDouble() * (MutationGradientMax - MutationGradientMin) + MutationGradientMin;
-            gradient_value *= gradient_sign;
-            Coefficients[3] += gradient_value;
-            Coefficients[4] += gradient_value;
-            Coefficients[5] += gradient_value;
+            //double gradient_value = rnd.NextDouble() * (MutationGradientMax - MutationGradientMin) + MutationGradientMin;
+            //gradient_value *= gradient_sign;
+            double value = rnd.NextDouble() * gradient_sign;
+            Coefficients[3] = value;
+            Coefficients[4] = value;
+            Coefficients[5] = value;
         }
 
         private void MutateCommonPieces()
         {
             int gradient_sign = rnd.Next(0, 2) * 2 - 1;
-            double gradient_value = rnd.NextDouble() * (MutationGradientMax - MutationGradientMin) + MutationGradientMin;
-            gradient_value *= gradient_sign;
-            Coefficients[7] += gradient_value;
-            Coefficients[8] += gradient_value;
-            Coefficients[9] += gradient_value;
+            //double gradient_value = rnd.NextDouble() * (MutationGradientMax - MutationGradientMin) + MutationGradientMin;
+            //gradient_value *= gradient_sign;
+            double value = rnd.NextDouble() * gradient_sign;
+            Coefficients[7] = value;
+            Coefficients[8] = value;
+            Coefficients[9] = value;
         }
 
         public void EvaluateFitness()
