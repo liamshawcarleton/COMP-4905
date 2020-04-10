@@ -27,7 +27,7 @@ namespace GeneticTrainer
             if (Console.ReadLine().ToLower() == "y")
             {
                 DNA smartAI = new DNA();
-                smartAI.BuildPredefinedAI(1);
+                smartAI.BuildPredefinedAI(0);
                 smartAI.Wins = 0;
                 smartAI.Losses = 0;
                 smartAI.GamesPlayed = 0;
@@ -36,7 +36,7 @@ namespace GeneticTrainer
                 randomAI.Wins = 0;
                 randomAI.Losses = 0;
                 randomAI.GamesPlayed = 0;
-                Player smartPlayer = new Player("Medium Player", ref smartAI);
+                Player smartPlayer = new Player("Easy Player", ref smartAI);
                 Player randomPlayer = new Player("Hard Player", ref randomAI);
                 Console.WriteLine("Game Count: ");
                 int gamecount = Convert.ToInt32(Console.ReadLine());
@@ -91,6 +91,7 @@ namespace GeneticTrainer
             Console.ReadLine();
         }
 
+        //old population generation method using the old generate function
         static void GeneratePopulation()
         {
             for (int i = 0; i< PopulationSize; i++)
@@ -101,6 +102,7 @@ namespace GeneticTrainer
             }
         }
 
+        //new population generation method using the new generate function
         static void NewGeneratePopulation()
         {
             for (int i = 0; i < PopulationSize; i++)
@@ -111,6 +113,7 @@ namespace GeneticTrainer
             }
         }
 
+        //called if you say 'y' to play game. Plays 2 AI's against eachother (used for testing)
         static void PlayLoop(int gamecount, ref Player player1, ref Player player2, bool playRandom)
         {
             for (int i = 0; i < gamecount; i++)
@@ -126,6 +129,7 @@ namespace GeneticTrainer
             }
         }
 
+        //old main loop, obsolete
         static void MainLoop()
         {
             t.Interval = 1000;
@@ -216,6 +220,7 @@ namespace GeneticTrainer
             }
         }
 
+        //new main loop, iterates over n epochs having each population member play eachother
         static void NewMainLoop()
         {
             t.Interval = 1000;
@@ -311,6 +316,7 @@ namespace GeneticTrainer
             time++;
         }
 
+        //Play AI against random AI
         static void PlayAgainstRandom(ref Player player1, ref Player player2)
         {
             AvailablePieces available = new AvailablePieces();
@@ -348,6 +354,7 @@ namespace GeneticTrainer
             }
         }
 
+        //Play AI against another AI with search depth 0 (calls quick play method instead of MinMax)
         static void PlayAgainstQuickAI(ref Player player1, ref Player player2)
         {
             AvailablePieces available = new AvailablePieces();
@@ -384,6 +391,7 @@ namespace GeneticTrainer
             }
         }
 
+        //Play AI against another AI with standard search depth (calls MinMax function)
         static void PlayAgainstSmartAI(ref Player player1, ref Player player2)
         {
             AvailablePieces available = new AvailablePieces();
@@ -420,6 +428,7 @@ namespace GeneticTrainer
             }
         }
 
+        //Pit two AI models against eachother
         static void Play(ref Player player1, ref Player player2)
         {
             AvailablePieces available = new AvailablePieces();
@@ -456,6 +465,7 @@ namespace GeneticTrainer
             }
         }
 
+        //Pit to AI models against eachother with search depth 0
         static void QuickPlay(ref DNA p1, ref DNA p2)
         {
             AvailablePieces available = new AvailablePieces();
@@ -494,6 +504,7 @@ namespace GeneticTrainer
             }
         }
 
+        //Tell player to play a piece on the board (MinMax)
         static Piece PlayPiece (ref Player player, ref Board board, ref AvailablePieces available)
         {
             object[] play = player.ai.MinMaxPlay(board, player.selectedPiece, available, 2, 0, false);
@@ -509,6 +520,7 @@ namespace GeneticTrainer
             return piece_play;
         }
 
+        //Tell the player to play a piece quickly on the board
         static void QuickPlayPiece(ref Player player, ref Board board, ref AvailablePieces available)
         {
             int[] location = player.ai.PlayPiece(board, player.selectedPiece, available);
@@ -517,6 +529,7 @@ namespace GeneticTrainer
             player.selectedPiece = null;
         }
 
+        //Tell the player to randomly play a piece on the board 
         static void RandomPlayPiece(ref Player player, ref Board board, ref AvailablePieces available)
         {
             int[] location = player.ai.RandomPlayPiece(board, player.selectedPiece, available);
@@ -525,6 +538,7 @@ namespace GeneticTrainer
             player.selectedPiece = null;
         }
 
+        //Tell the player to give the opposing player a piece (MinMax)
         static void GivePiece(ref Player picker, ref Player receiver, ref Piece piece)
         {
             receiver.selectedPiece = piece;
@@ -532,6 +546,7 @@ namespace GeneticTrainer
             ChangeTurns(ref picker, ref receiver);
         }
 
+        //Tell the player to give the opposing player a piece quickly
         static void QuickGivePiece(ref Player picker, ref Player receiver, ref Board board, ref AvailablePieces available)
         {
             Piece p = picker.ai.PickPiece(board, available);
@@ -541,6 +556,7 @@ namespace GeneticTrainer
             ChangeTurns(ref picker, ref receiver);
         }
 
+        //Tell the player to randomly give the opposing player a piece
         static void RandomGivePiece(ref Player picker, ref Player receiver, ref Board board, ref AvailablePieces available)
         {
             Piece p = picker.ai.RandomPickPiece(board, available);
@@ -550,12 +566,14 @@ namespace GeneticTrainer
             ChangeTurns(ref picker, ref receiver);
         }
 
+        //Switch Turns
         static void ChangeTurns(ref Player player1, ref Player player2)
         {
             player1.active = !player1.active;
             player2.active = !player2.active;
         }
 
+        //Record a win and loss on the respective players to update their statistics
         static void GameWon(ref Player winner, ref Player loser)
         {
             winner.ai.GamesPlayed += 1;
@@ -572,12 +590,14 @@ namespace GeneticTrainer
             loser.selectedPiece = null;
         }
 
+        //Don't record any statistics for either player other than games played
         static void GameTie(ref Player winner, ref Player loser)
         {
             winner.ai.GamesPlayed += 1;
             loser.ai.GamesPlayed += 1;
         }
 
+        //old seletion algorithm
         static void Selection()
         {
             foreach (DNA d in Population){ d.EvaluateFitness(); }
@@ -614,6 +634,7 @@ namespace GeneticTrainer
             }
         }
 
+        //new selection algorithm
         static void NewSelection()
         {
             foreach (DNA d in Population) { d.EvaluateFitness(); }
@@ -650,6 +671,7 @@ namespace GeneticTrainer
             }
         }
 
+        //old mutation algorithm
         static void Mutation()
         {
             foreach(DNA d in Population)
@@ -661,6 +683,7 @@ namespace GeneticTrainer
             }
         }
 
+        //new mutation algorithm
         static void NewMutate()
         {
             foreach (DNA d in Population)
@@ -672,6 +695,7 @@ namespace GeneticTrainer
             }
         }
 
+        //save the progress for the overall evolution after each generation has finished (so that we don't have to run the program for days at a time)
         static void Save(int iteration)
         {
             if (string.IsNullOrEmpty(EvolutionFilePath)) { return; }
@@ -682,6 +706,8 @@ namespace GeneticTrainer
             Console.WriteLine("Genetic Population Saved");
         }
 
+        //save the progress for the current generation (so that we don't have to run the program for days at a time)
+        //called after one player finished playing every other player
         static void SaveProgress(List<DNA> localPop)
         {
             using (StreamWriter sw = new StreamWriter(new FileStream(ProgressFilePath, FileMode.Create)))
@@ -703,6 +729,7 @@ namespace GeneticTrainer
             Console.WriteLine("Progress Saved");
         }
 
+        //used for loading the current progress
         static void ReadEvolutionInfo()
         {
             string[] info;
@@ -715,6 +742,7 @@ namespace GeneticTrainer
             SlowIterationCount = Convert.ToInt32(info[5]);
         }
 
+        //used for loading the current progress
         static void ReadProgressInfo()
         {
             Population.Clear();
@@ -734,6 +762,7 @@ namespace GeneticTrainer
             }
         }
 
+        //creates the file that stores the current progress
         static void CreateEvolutionFile()
         {
             using (StreamWriter sw = new StreamWriter(new FileStream(EvolutionFilePath, FileMode.Create)))

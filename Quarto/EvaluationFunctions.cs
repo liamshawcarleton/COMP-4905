@@ -15,6 +15,7 @@ namespace Quarto
             Diagonal
         }
 
+        //checks if placing a piece in a given location will result in a win
         public static int WinningMoveAvailable(Piece p, Board b, int[] coordinates)
         {
             Board temp = new Board();
@@ -24,6 +25,7 @@ namespace Quarto
             return 0;
         }
 
+        //Checks if the location provided resides on a diagonal with 4 tiles
         public static int Winnable(EvaluationDirection d, Board b, int x, int y)
         {
             switch (d)
@@ -46,6 +48,7 @@ namespace Quarto
             return 0;
         }
 
+        //computes an XOR on all pieces in a vector resulting in a 4bit binary array that represents which properties are shared by all pieces
         public static int[] CommonProperties(EvaluationDirection d, Board b, int x = 0, int y = 0)
         {
             List<Piece> pieceList = new List<Piece>();
@@ -114,6 +117,7 @@ namespace Quarto
             return null;
         }
 
+        //returns the number of open spots for a given vector 
         public static int SpotsRemaining(EvaluationDirection d, Board b, int x, int y)
         {
             int count = 0;
@@ -155,6 +159,7 @@ namespace Quarto
             return count;
         }
 
+        //counts the number of 1's in a 4bit binary array
         public static int BinarySum(int[] binary)
         {
             int result = 0;
@@ -165,6 +170,7 @@ namespace Quarto
             return result;
         }
 
+        //obsolete
         public static int IsWinningMove(Piece p, Board b, int x = 0, int y = 0)
         {
             int rowSum = BinarySum(p.BinaryXOR(CommonProperties(EvaluationDirection.Row, b, x, y)));
@@ -178,6 +184,7 @@ namespace Quarto
             return 0;
         }
 
+        //obsolete
         public static int NumberPiecesRemaining(Piece[] remainingPieces)
         {
             int count = 0;
@@ -188,6 +195,7 @@ namespace Quarto
             return count;
         }
 
+        //returns the number of unpicked pieces remaining that share atleast one property with the piece residing on a given vector
         public static int CommonPiecesRemaining(EvaluationDirection d, Board b, Piece[] remainingPieces, int x = 0, int y = 0)
         {
             int[] binary;

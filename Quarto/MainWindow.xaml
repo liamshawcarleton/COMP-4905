@@ -21,10 +21,15 @@
         <local:PlayerSlot x:Name="player2Slot" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="2"/>
         <local:GameBoard x:Name="mainBoard" Grid.Column="1"/>
         <local:PieceSlots x:Name="pieceSlots" Grid.Row="1" Grid.Column="1"/>
-        <WrapPanel Name="TestingPanel" Grid.Row="2" Grid.ColumnSpan="3">
+        <WrapPanel Name="TestingPanel" Grid.Row="2" Grid.ColumnSpan="3" Visibility="Hidden">
             <Button Name="btnBinaryXOR" Content="BinaryXOR" Click="btnBinaryXOR_Click"/>
             <Button Name="btnSpotsRemaining" Content="Spots Remaining" Click="btnSpotsRemaining_Click"/>
             <Button Name="btnEvaluate" Content="Evaluate Board" Click="btnEvaluate_Click"/>
+        </WrapPanel>
+        <WrapPanel Name="PlayingPanel" Grid.Row="2" Grid.ColumnSpan="3" Visibility="Visible">
+            <Button Name="btnEasy" Content="Easy AI" Click="BtnEasy_Click"/>
+            <Button Name="btnMedium" Content="Medium AI" Click="BtnMedium_Click"/>
+            <Button Name="btnHard" Content="Hard AI" Click="BtnHard_Click"/>
         </WrapPanel>
     </Grid>
 </Window>

@@ -30,6 +30,7 @@ namespace Quarto
 
         public DNA(string progress) { LoadFromProgress(progress); }
 
+        //the original initialization algorithm which initialized everything randomly
         public void Generate()
         {
             for (int i = 0; i < Coefficients.Length; i++)
@@ -39,6 +40,7 @@ namespace Quarto
             }
         }
 
+        //the new initialize algorithm that initalized related values together
         public void NewGenerate()
         {
             Coefficients[7] = rnd.NextDouble();
@@ -47,6 +49,7 @@ namespace Quarto
             GenerateCommonPieces();
         }
 
+        //experimented with generating AI models using the line of best fit in for the dataset
         public void GenerateVariableAI(int iteration)
         {
             double bSum = 0.0085 * iteration + 0.7218;
@@ -60,6 +63,7 @@ namespace Quarto
 
         public void BuildPredefinedAI(int difficulty)
         {
+            //results obtained after training
             switch (difficulty)
             {
                 case 0:
@@ -77,6 +81,7 @@ namespace Quarto
             }
         }
 
+        //initialize the binary sum chromosomes
         private void GenerateBinarySum()
         {
             double min_value = 0.3;
@@ -87,6 +92,7 @@ namespace Quarto
             Coefficients[2] = initial_value;
         }
 
+        //initialize the spots remaining chromosomes
         private void GenerateSpotsRemaining()
         {
             double min_value = 2;
@@ -97,6 +103,7 @@ namespace Quarto
             Coefficients[5] = initial_value;
         }
 
+        ////initialize the common pieces chromosomes
         private void GenerateCommonPieces()
         {
             double min_value = -0.3;
@@ -107,6 +114,7 @@ namespace Quarto
             Coefficients[9] = initial_value;
         }
 
+        //selects a location to play a piece by evaluating the board with a depth of 0 (used during training)
         public int[] PlayPiece(Board b, Piece p, AvailablePieces a)
         {
             List<int[]> playableLocations = b.GetOpenSpots();
@@ -120,6 +128,7 @@ namespace Quarto
             return sorted[0];
         }
 
+        //original attempt at MinMax play, no longer used
         public int[] RecursivePlayPiece(Board b, Piece p, AvailablePieces a)
         {
             List<int[]> playableLocations = b.GetOpenSpots();
@@ -162,6 +171,7 @@ namespace Quarto
             return sorted[0];
         }
 
+        //picks a random location to play a pieces (used for random opponent)
         public int[] RandomPlayPiece(Board b, Piece p, AvailablePieces a)
         {
             List<int[]> playableLocations = b.GetOpenSpots();
@@ -169,6 +179,7 @@ namespace Quarto
             return playableLocations[rng];
         }
 
+        //Evaluation Function for placing a piece
         public double StaticPlayEvaluate(Board b, Piece p, int[] coordinates, AvailablePieces a)
         {
             double v1 = Coefficients[0] * EvaluationFunctions.BinarySum(EvaluationFunctions.CommonProperties(EvaluationFunctions.EvaluationDirection.Row, b, coordinates[0], coordinates[1]));
@@ -189,6 +200,7 @@ namespace Quarto
             //return (v1 * v8 - v4) + (v2 * v9 - v5) + (v3 * v10 * v11 - v6);
         }
 
+        //evaluation function for picking a piece (opposite of playing a piece)
         public double StaticPickEvaluate(Board b, Piece p, AvailablePieces a)
         {
             List<int[]> playableLocations = b.GetOpenSpots();
@@ -206,6 +218,7 @@ namespace Quarto
             return value;
         }
 
+        //original attempt at MinMax evaluation, not used anymore
         public Dictionary<int[], double> RecursivePlayEvaluation(Board b, Piece p, AvailablePieces a, int depth)
         {
             if (depth == 0)
@@ -239,6 +252,7 @@ namespace Quarto
             }
         }
 
+        //picks a piece without evaluation future board states (depth 0)
         public Piece PickPiece(Board b, AvailablePieces av)
         {
             List<int[]> playableLocations = b.GetOpenSpots();
@@ -254,6 +268,7 @@ namespace Quarto
             return sorted[0];
         }
 
+        //original attempt at MinMax pick, not used anymore
         public Piece RecursivePickPiece(Board b, AvailablePieces av)
         {
             List<int[]> playableLocations = b.GetOpenSpots();
@@ -282,6 +297,7 @@ namespace Quarto
             return sorted[0];
         }
 
+        //randomly picks a piece (used for random opponent)
         public Piece RandomPickPiece(Board b, AvailablePieces av)
         {
             Piece[] pieces = av.RemainingPieces;
@@ -296,6 +312,7 @@ namespace Quarto
             return null;
         }
 
+        //original MinMax pick evaluation attempt, not used anymore
         public Dictionary<Piece, double> RecursivePickEvaluation(Board b, AvailablePieces av, int depth)
         {
             if (depth == 0)
@@ -331,6 +348,7 @@ namespace Quarto
             }
         }
 
+        //prints out DNA information
         public string PrintInfo()
         {
             StringBuilder sb = new StringBuilder();
@@ -341,6 +359,7 @@ namespace Quarto
             return sb.ToString();
         }
 
+        //prints out the individuals game statistics
         public string PrintProgress(int currentGeneration)
         {
             StringBuilder sb = new StringBuilder();
@@ -356,6 +375,7 @@ namespace Quarto
             return sb.ToString();
         }
 
+        //builds the individual by parsing values from a csv
         public void LoadFromProgress(string progress)
         {
             string[] values = progress.Split(',');
@@ -369,6 +389,7 @@ namespace Quarto
             }
         }
 
+        //original crossover function (all values crossover randomly)
         public static DNA Crossover(DNA dna1, DNA dna2)
         {
             int crossoverPoint = rnd.Next(CrossoverMinimum, CrossoverMaximum);
@@ -384,6 +405,7 @@ namespace Quarto
             return child;
         }
 
+        //revised crossover function which crossedover values in groups
         public static DNA NewCrossover(DNA dna1, DNA dna2)
         {
             double[] new_values = new double[10];
@@ -445,6 +467,7 @@ namespace Quarto
             return child;
         }
 
+        //original mutate function (randomly assign new value
         public bool Mutate()
         {
             bool ret = false;
@@ -462,6 +485,7 @@ namespace Quarto
             return ret;
         }
 
+        //revised mutate which mutated groups of chromosomes as opposed to individually
         public bool NewMutate()
         {
             bool mut = false;
@@ -487,6 +511,7 @@ namespace Quarto
             return mut;
         }
 
+        //the function to mutate the binary sum group. Originally implemented using a gradient (commented out), now set to random for experiment
         private void MutateSum()
         {
             int gradient_sign = rnd.Next(0, 2) * 2 - 1;
@@ -498,6 +523,7 @@ namespace Quarto
             Coefficients[2] = value;
         }
 
+        //the function to mutate the spots remaining group. Originally implemented using a gradient (commented out), now set to random for experiment
         private void MutateSpotsRemaining()
         {
             int gradient_sign = rnd.Next(0, 2) * 2 - 1;
@@ -509,6 +535,7 @@ namespace Quarto
             Coefficients[5] = value;
         }
 
+        //the function to mutate the common pieces remaining group. Originally implemented using a gradient (commented out), now set to random for experiment
         private void MutateCommonPieces()
         {
             int gradient_sign = rnd.Next(0, 2) * 2 - 1;
@@ -520,6 +547,7 @@ namespace Quarto
             Coefficients[9] = value;
         }
 
+        //fitness function (determinted by winrate)
         public void EvaluateFitness()
         {
             if (Wins == 0) { Fitness = 0; return; }
@@ -529,6 +557,7 @@ namespace Quarto
             Fitness = winPercentage * turnModifier;
         }
 
+        //save this individuals dna to a file
         public void Save(int generation, string filePath)
         {
             StringBuilder sb = new StringBuilder();
@@ -560,6 +589,7 @@ namespace Quarto
             return list;
         }
 
+        //MinMax play algorithm 
         //[int[], piece, value]
         public object[] MinMaxPlay(Board b, Piece p, AvailablePieces av, int depth, double value, bool opponent)
         {
@@ -631,6 +661,7 @@ namespace Quarto
             return bestPlay;
         }
 
+        //MinMax pick algorithm
         //[piece, value]
         public object[] MinMaxPick(Board b, AvailablePieces av, int depth, double value, bool opponent)
         {

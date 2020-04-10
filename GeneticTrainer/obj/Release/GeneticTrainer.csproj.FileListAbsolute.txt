@@ -8,3 +8,14 @@ C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\obj\Release\GeneticTrainer.cs
 C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\obj\Release\GeneticTrainer.csproj.CopyComplete
 C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\obj\Release\GeneticTrainer.exe
 C:\Users\Stilts\source\repos\Quarto\GeneticTrainer\obj\Release\GeneticTrainer.pdb
+C:\Users\5foot\Desktop\COMP-4905\GeneticTrainer\bin\Release\GeneticTrainer.exe.config
+C:\Users\5foot\Desktop\COMP-4905\GeneticTrainer\bin\Release\GeneticTrainer.exe
+C:\Users\5foot\Desktop\COMP-4905\GeneticTrainer\bin\Release\GeneticTrainer.pdb
+C:\Users\5foot\Desktop\COMP-4905\GeneticTrainer\bin\Release\Quarto.exe
+C:\Users\5foot\Desktop\COMP-4905\GeneticTrainer\bin\Release\Quarto.pdb
+C:\Users\5foot\Desktop\COMP-4905\GeneticTrainer\bin\Release\Quarto.exe.config
+C:\Users\5foot\Desktop\COMP-4905\GeneticTrainer\obj\Release\GeneticTrainer.csprojAssemblyReference.cache
+C:\Users\5foot\Desktop\COMP-4905\GeneticTrainer\obj\Release\GeneticTrainer.csproj.CoreCompileInputs.cache
+C:\Users\5foot\Desktop\COMP-4905\GeneticTrainer\obj\Release\GeneticTrainer.csproj.CopyComplete
+C:\Users\5foot\Desktop\COMP-4905\GeneticTrainer\obj\Release\GeneticTrainer.exe
+C:\Users\5foot\Desktop\COMP-4905\GeneticTrainer\obj\Release\GeneticTrainer.pdb
