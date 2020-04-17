@@ -27,7 +27,7 @@ namespace GeneticTrainer
             if (Console.ReadLine().ToLower() == "y")
             {
                 DNA smartAI = new DNA();
-                smartAI.BuildPredefinedAI(0);
+                smartAI.BuildPredefinedAI(1);
                 smartAI.Wins = 0;
                 smartAI.Losses = 0;
                 smartAI.GamesPlayed = 0;
@@ -36,7 +36,7 @@ namespace GeneticTrainer
                 randomAI.Wins = 0;
                 randomAI.Losses = 0;
                 randomAI.GamesPlayed = 0;
-                Player smartPlayer = new Player("Easy Player", ref smartAI);
+                Player smartPlayer = new Player("Medium Player", ref smartAI);
                 Player randomPlayer = new Player("Hard Player", ref randomAI);
                 Console.WriteLine("Game Count: ");
                 int gamecount = Convert.ToInt32(Console.ReadLine());
@@ -120,7 +120,7 @@ namespace GeneticTrainer
             {
                 if (playRandom)
                 {
-                    PlayAgainstRandom(ref player1, ref player2);
+                    PlayAgainstQuickAI(ref player1, ref player2);
                 }
                 else
                 {

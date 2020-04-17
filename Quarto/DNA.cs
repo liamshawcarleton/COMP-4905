@@ -67,15 +67,15 @@ namespace Quarto
             switch (difficulty)
             {
                 case 0:
-                    LoadFromProgress("39,29,15,14,147,0.5965,0.5965,0.5965,0.9266,0.9266,0.9266,0,-0.3561,-0.3561,-0.3561");
+                    LoadFromProgress("5,29,0,0,0,0.726896913,0.726896913,0.726896913,0.056102734,0.056102734,0.056102734,0,0.125947166,0.125947166,0.125947166");
                     this.SearchDepth = 0;
                     break;
                 case 1:
-                    LoadFromProgress("39,29,0,21,0,0.5965,0.5965,0.5965,-0.4577,-0.4577,-0.4577,0,-0.0403,-0.0403,-0.0403");
+                    LoadFromProgress("20,29,0,0,0,1.210697644,1.210697644,1.210697644,0.469325508,0.469325508,0.469325508,0,0.466178122,0.466178122,0.466178122");
                     this.SearchDepth = 1;
                     break;
                 default:
-                    LoadFromProgress("10,29,0,0,0,0.726896913,0.726896913,0.726896913,0.056102734,0.056102734,0.056102734,0,0.125947166,0.125947166,0.125947166");
+                    LoadFromProgress("90,29,0,0,0,1.550194256,1.550194256,1.550194256,1.078303849,1.078303849,1.078303849,0,0.783752251,0.783752251,0.783752251");
                     this.SearchDepth = 2;
                     break;
             }
@@ -610,7 +610,8 @@ namespace Quarto
             {
                 Board temp = b.Copy();
                 temp.SetPiece(p, sorted[i][0], sorted[i][1]);
-                if (temp.CheckWin() && depth == 2) { return new object[] { sorted[i], p, 1000 }; }
+                if (temp.CheckWin()) { if (!opponent) { return new object[] { sorted[i], p, 1000 }; } else { return new object[] { sorted[i], p, -1000 }; } }
+                if (evaluationCount == 1) { return new object[] { sorted[0], p, 1 }; }
                 if (!opponent)
                 {
                     object[] eval = MinMaxPick(temp, av, depth, evaluationDict[sorted[i]], opponent);
@@ -634,7 +635,7 @@ namespace Quarto
                 {
                     try
                     {
-                        if ((double)o[2] < (double)bestPlay[2]) { bestPlay = o; }
+                        if ((double)o[2] > (double)bestPlay[2]) { bestPlay = o; }
                     }
                     catch
                     {
@@ -649,7 +650,7 @@ namespace Quarto
                 {
                     try
                     {
-                        if ((double)o[2] > (double)bestPlay[2]) { bestPlay = o; }
+                        if ((double)o[2] < (double)bestPlay[2]) { bestPlay = o; }
                     }
                     catch
                     {
@@ -668,6 +669,7 @@ namespace Quarto
             Piece p = PickPiece(b, av);
             AvailablePieces copy = av.Copy();
             value -= StaticPickEvaluate(b, p, av);
+           
             if (depth == 0)
             {
                 if (value == 0) { value = 0.0; }

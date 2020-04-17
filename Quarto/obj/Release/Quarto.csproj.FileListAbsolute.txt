@@ -48,3 +48,4 @@ C:\Users\5foot\Desktop\COMP-4905\Quarto\obj\Release\Quarto.csproj.GenerateResour
 C:\Users\5foot\Desktop\COMP-4905\Quarto\obj\Release\Quarto.csproj.CoreCompileInputs.cache
 C:\Users\5foot\Desktop\COMP-4905\Quarto\obj\Release\Quarto.exe
 C:\Users\5foot\Desktop\COMP-4905\Quarto\obj\Release\Quarto.pdb
+C:\Users\5foot\Desktop\COMP-4905\Quarto\obj\Release\Quarto.csprojAssemblyReference.cache
